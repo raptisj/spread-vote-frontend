@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Input,
@@ -6,15 +6,24 @@ import {
   FormLabel,
   FormHelperText,
   Image,
+  CircularProgress,
 } from "@chakra-ui/core";
 import styled from "@emotion/styled";
 import CustomButton from "../ui/Button";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+
 import {
   preFetchGuest,
   createGuest,
+  getAllGuests,
   guestsSelector,
 } from "../redux/slices/guests";
+import { currentUser } from "../redux/slices/auth";
+import { isEmpty } from "../utils/helperFunctions";
+import GlobalSpinner from "../ui/GlobalSpinner";
+import { authSelector } from "../redux/slices/auth";
+import FullWidthCard from "../ui/FullWidthCard";
 
 const Divider = styled.div`
   height: 1px;
@@ -45,17 +54,62 @@ const ImageBox = styled.div`
   }
 `;
 
+const GuestExistsMsg = styled.p`
+  margin: 16px 0;
+  color: ${(props) => props.theme.colors.green.brand};
+  font-size: 20px;
+`;
+
+const ScrapeLoader = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 24px 0;
+`;
+
+const Body = styled.div`
+  min-height: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & > div {
+    width: 100%;
+  }
+`;
+
 // @jdnoc
 const AddGuest = () => {
   const dispatch = useDispatch();
-  const { twitterData, loading } = useSelector(guestsSelector);
+  const { twitterData, loading, scrapeLoader } = useSelector(guestsSelector);
+  const { isAuthenticated, user } = useSelector(authSelector);
+  const [inputValue, setInputValue] = useState("");
+
+  useEffect(() => {
+    dispatch(getAllGuests());
+
+    if (isAuthenticated) {
+      dispatch(currentUser());
+    }
+  }, [dispatch, isAuthenticated]);
 
   const handlePaste = (e) => {
     let name = e.clipboardData.getData("Text").replace(/[@]/, "");
+    setInputValue(name);
+
     const data = {
       name,
     };
     dispatch(preFetchGuest(data));
+  };
+
+  const handleChange = (e) => {
+    var keycode = e.keyCode ? e.keyCode : e.which;
+    if (keycode === 8) {
+      setInputValue("");
+    } else {
+      setInputValue((inputValue) => inputValue);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -71,6 +125,8 @@ const AddGuest = () => {
     dispatch(createGuest(data));
   };
 
+  if (loading) return <GlobalSpinner />;
+
   return (
     <Box p="32px" margin="0 auto" maxWidth="1280px">
       <h2>Add Guest</h2>
@@ -85,35 +141,76 @@ const AddGuest = () => {
             aria-describedby="guest-name"
             boxSizing="border-box"
             onPaste={(e) => handlePaste(e)}
+            onKeyDown={(e) => handleChange(e)}
+            onChange={(e) => setInputValue(inputValue)}
+            value={inputValue}
           />
           <FormHelperText id="guest-name">
             Paste user's Twitter name. Typing it won't work.
           </FormHelperText>
 
-          {twitterData !== null && (
-            <ImageBox>
-              <Image
-                rounded="9999px"
-                size="150px"
-                src={twitterData.twitterImage}
-                alt="Segun Adebayo"
-                display="block"
-                p="16px"
-                objectFit="cover"
-              />
-              <h3>{twitterData.name}</h3>
-              <span>{twitterData.twitterName}</span>
-              <p>{twitterData.bio}</p>
-            </ImageBox>
-          )}
+          <Body>
+            <div>
+              {twitterData !== null &&
+                !isEmpty(twitterData) &&
+                !twitterData._id && (
+                  <ImageBox>
+                    <Image
+                      rounded="9999px"
+                      size="150px"
+                      src={twitterData.twitterImage}
+                      alt={twitterData.name}
+                      display="block"
+                      p="16px"
+                      objectFit="cover"
+                    />
+                    <h3>{twitterData.name}</h3>
+                    <span>{twitterData.twitterName}</span>
+                    <p>{twitterData.bio}</p>
+                  </ImageBox>
+                )}
 
+              {twitterData !== null && twitterData._id && (
+                <React.Fragment>
+                  <GuestExistsMsg>
+                    This user already exits. Go and vote.
+                  </GuestExistsMsg>
+
+                  <Link to={`/guests/${twitterData._id}`}>
+                    <FullWidthCard
+                      card={twitterData}
+                      hasVoted={
+                        user ? twitterData.votes.includes(user._id) : null
+                      }
+                    />
+                  </Link>
+                </React.Fragment>
+              )}
+
+              {isEmpty(twitterData) && twitterData !== null && (
+                <div>Could not find guest</div>
+              )}
+              {scrapeLoader && (
+                <ScrapeLoader>
+                  <CircularProgress
+                    isIndeterminate
+                    color="green"
+                  ></CircularProgress>
+                </ScrapeLoader>
+              )}
+            </div>
+          </Body>
           <Divider />
 
           <FormHelperText id="guest-name">
             <CustomButton
               appearance="primary"
               type="submit"
-              isLoading={loading}
+              disabled={
+                isEmpty(twitterData) ||
+                (twitterData !== null && twitterData._id)
+              }
+              // isLoading={loading}
             >
               Submit
             </CustomButton>

@@ -69,7 +69,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={Landing} />
           <Route exact path="/guests/" component={AllGuest} />
-          <Route exact path="/guest/:id" component={SingleGuest} />
+          <Route exact path="/guests/:id" component={SingleGuest} />
           <PrivateRoute exact path="/vote/" component={VotingForm} />
           <PrivateRoute exact path="/dash/" component={Dashboard} />
           <PrivateRoute exact path="/add-guest/" component={AddGuest} />

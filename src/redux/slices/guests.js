@@ -6,6 +6,7 @@ let url = "http://localhost:4000";
 
 export const initialState = {
   loading: false,
+  scrapeLoader: false,
   hasErrors: false,
   guests: [],
   singleGuest: null,
@@ -20,10 +21,15 @@ const guestsSlice = createSlice({
       state.loading = true;
     },
 
+    loadScraper: (state) => {
+      state.scrapeLoader = true;
+    },
+
     getAllGuestsSuccess: (state, { payload }) => {
       state.loading = false;
       state.hasErrors = false;
       state.guests = payload;
+      state.singleGuest = null;
     },
 
     getSingleGuestSuccess: (state, { payload }) => {
@@ -43,6 +49,7 @@ const guestsSlice = createSlice({
 
     preFetchSuccess: (state, { payload }) => {
       state.loading = false;
+      state.scrapeLoader = false;
       state.twitterData = payload;
     },
 
@@ -60,6 +67,7 @@ const guestsSlice = createSlice({
 
 export const {
   loadGuests,
+  loadScraper,
   getAllGuestsSuccess,
   getSingleGuestSuccess,
   voteGuestSuccess,
@@ -199,7 +207,7 @@ export const unVoteGuest = (userId, id) => async (dispatch, getState) => {
  *  PRE FETCH GUEST
  */
 export const preFetchGuest = (twitterName) => async (dispatch, getState) => {
-  dispatch(loadGuests());
+  dispatch(loadScraper());
 
   let apiUrl = `${url}/guests/create/fetch`;
 
@@ -229,7 +237,7 @@ export const createGuest = (twitterData) => async (dispatch, getState) => {
 
   try {
     const res = await axios.post(apiUrl, twitterData, tokenConfig(getState));
-    // console.log(res);
+
     dispatch(createGuestSuccess(res.data));
     window.location.replace("/guests");
   } catch (error) {

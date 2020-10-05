@@ -43,7 +43,7 @@ const AllGuest = () => {
       <Grid templateColumns="repeat(1, 1fr)" gap="16px" mt="32px">
         {guests.length > 0 &&
           guests.map((card, i) => (
-            <Link to={`/guest/${card._id}`} key={i}>
+            <Link to={`/guests/${card._id}`} key={i}>
               <FullWidthCard
                 card={card}
                 hasVoted={user ? card.votes.includes(user._id) : null}

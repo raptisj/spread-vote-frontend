@@ -90,6 +90,7 @@ const SingleGuest = (props) => {
   }, [dispatch, props.match.params.id, isAuthenticated]);
 
   if (singleGuest === null) return <GlobalSpinner />;
+  const { name, twitterName, twitterImage, votes, bio } = singleGuest;
 
   const handleVote = () => {
     let userData = {
@@ -98,45 +99,46 @@ const SingleGuest = (props) => {
 
     dispatch(upVoteGuest(userData, singleGuest._id));
   };
-  // console.log(singleGuest);
 
   return (
     <Layout>
       <GoBack path="/guests/" />
-      <Grid templateColumns="repeat(2, 1fr)" gap="16px">
-        <Box border="1px solid #e6e6e6" w="100%">
+
+      <Grid templateColumns="1fr 26px 1fr" gap="16px">
+        <Box w="100%" gridColumn="1 / 3">
           <img
-            src="https://images.pexels.com/photos/3775168/pexels-photo-3775168.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+            src={twitterImage}
             alt="user"
             style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
               display: "flex",
               borderRadius: "4px",
+              marginLeft: "auto",
             }}
           />
         </Box>
-        <InfoCard p="16px" display="flex" flexDirection="column">
+        <InfoCard
+          p="16px"
+          display="flex"
+          flexDirection="column"
+          gridColumn="2 /4"
+          mt="-272px"
+        >
           <Box display="flex" flexDirection="column" h="100%" pb="16px">
             <Header>
               <div>
-                <h2>{singleGuest.name}</h2>
-                <h3>{singleGuest.twitterName}</h3>
+                <h2>{name}</h2>
+                <h3>{twitterName}</h3>
               </div>
               <div>
                 <Votes>
-                  <span>Votes:</span> {singleGuest.votes.length}
+                  <span>Votes:</span> {votes.length}
                 </Votes>
               </div>
             </Header>
 
             <Divider />
 
-            <Bio>
-              Monica is a developer from Benin. Loves cats and selfies. Talks
-              about open source and helping the developer community.
-            </Bio>
+            <Bio>{bio}</Bio>
             <p>Has appeared before in the show</p>
           </Box>
           <Box mt="auto" textAlign="right">

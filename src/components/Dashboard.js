@@ -54,7 +54,7 @@ const Dashboard = () => {
         </h2>
         <p>List of all the guests you have voted.</p>
       </Header>
-      <Grid templateColumns="repeat(2, 1fr)" gap="16px" mt="32px">
+      <Grid templateColumns="repeat(3, 1fr)" gap="16px" mt="32px">
         {user.guests.map((guest, i) => (
           <DashboardCard
             guest={guest}

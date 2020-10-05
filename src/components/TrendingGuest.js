@@ -45,7 +45,7 @@ const TrendingGuest = ({ guests }) => {
       </Box>
       <Grid templateColumns="repeat(5, 1fr)" gap="16px">
         {guests.map((card, i) => (
-          <Link to={`/guest/${card._id}`} key={i}>
+          <Link to={`/guests/${card._id}`} key={i}>
             <TrendingCard
               card={card}
               hasVoted={user ? card.votes.includes(user._id) : null}

@@ -55,6 +55,11 @@ const Card = styled(Box)`
   h3 {
     font-size: 26px;
     margin-left: 16px;
+    color: ${(props) => props.theme.colors.black.dark};
+  }
+
+  h3 + p {
+    color: ${(props) => props.theme.colors.black.soft};
   }
 
   p > span {
@@ -74,15 +79,15 @@ const Card = styled(Box)`
 `;
 
 const FullWidthCard = ({ hasVoted = false, card }) => {
+  const { name, twitterName, twitterImage, votes } = card;
   return (
     <Card hasVoted={hasVoted}>
       <span>Voted</span>
       <Image
         rounded="9999px"
         size="90px"
-        src="https://images.pexels.com/photos/3775168/pexels-photo-3775168.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-        alt="Segun Adebayo"
-        // margin="0 auto"
+        src={twitterImage}
+        alt={name}
         display="block"
         p="8px"
         objectFit="cover"
@@ -94,9 +99,12 @@ const FullWidthCard = ({ hasVoted = false, card }) => {
         justifyContent="space-between"
         w="100%"
       >
-        <h3>{card.name}</h3>
+        <div>
+          <h3>{name}</h3>
+          <p>{twitterName}</p>
+        </div>
         <p>
-          <span>{card.votes ? card.votes.length : 0}</span>
+          <span>{votes ? votes.length : 0}</span>
           Votes
         </p>
       </Box>

@@ -1,111 +1,126 @@
 import React from "react";
 import CustomButton from "../ui/Button";
 import styled from "@emotion/styled";
-import {
-  Box,
-  Image,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  useDisclosure,
-} from "@chakra-ui/core";
+import { Box, Image, useDisclosure } from "@chakra-ui/core";
+import DeleteModal from "../screens/DeleteModal";
+import { Link } from "react-router-dom";
 
-const ButtonBox = styled(Box)`
-  && {
-    margin: 0 16px 16px 0;
-    grid-column: 1 / -1;
-    justify-self: end;
-    align-self: end;
+const BackgroundShape = styled.div`
+  position: absolute;
+  transform: translateY(60px);
+  left: 16px;
+  height: 40%;
+  background: #19c39c10;
+  z-index: 0;
+  right: 16px;
+  top: 16px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: all 0.5s;
+`;
+
+const Card = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: none;
+  width: 100%;
+  height: 250px;
+  background: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.15);
+  position: relative;
+
+  &:hover {
+    & > div {
+      opacity: 1;
+      transition: all 0.5s;
+      transform: translateY(0px);
+    }
   }
 `;
 
 const InfoBox = styled(Box)`
   padding: 24px 0;
   border-bottom: 1px solid #e6e6e6;
+  z-index: 1;
 
   h3 {
-    margin-bottom: 8px;
+    color: ${(props) => props.theme.colors.black.dark};
+  }
+
+  p {
+    color: ${(props) => props.theme.colors.black.soft};
   }
 `;
 
-const CloseModal = styled.span`
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-block;
-`;
+const ButtonBox = styled(Box)`
+  p {
+    font-size: 16px;
+    font-weight: 500;
+  }
 
-const StyledModalHeader = styled.span`
-  color: ${(props) => props.theme.colors.green.brand};
-  display: inline-block;
-  margin-left: 4px;
-  font-size: 30px;
+  span {
+    color: #19c39c;
+    font-weight: 600;
+    font-size: 40px;
+    margin-right: 4px;
+  }
+
+  && {
+    grid-column: 1 / -1;
+    align-self: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+  }
 `;
 
 const DashboardCard = ({ guest, handleUnVote, loading }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { name, twitterName, twitterImage, votes, _id } = guest;
 
   return (
-    <Box
-      display="grid"
-      gridTemplateColumns="repeat(2,1fr)"
-      border="none"
-      w="100%"
-      h="250px"
-      bg="#FFFFFF"
-      borderRadius="4px"
-      boxShadow="0px 3px 5px rgba(0,0,0,0.15)"
-    >
-      <Box p="16px 0 0 0" borderBottom="1px solid #e6e6e6">
-        <Image
-          rounded="full"
-          size="150px"
-          src="https://images.pexels.com/photos/3775168/pexels-photo-3775168.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-          alt="Segun Adebayo"
-          margin="0 auto"
-          display="block"
-          objectFit="cover"
-        />
+    <Card>
+      <BackgroundShape />
+      <Box p="16px 0 0 0" borderBottom="1px solid #e6e6e6" zIndex="1">
+        <Link to={`/guest/${_id}`}>
+          <Image
+            rounded="full"
+            size="150px"
+            src={twitterImage}
+            alt={name}
+            margin="0 auto"
+            display="block"
+            objectFit="cover"
+          />
+        </Link>
       </Box>
       <InfoBox>
-        <h3>{guest.name}</h3>
-        <p>Votes: {guest.votes && guest.votes.length}</p>
-        <p>Category: Comedy</p>
+        <Link to={`/guest/${_id}`}>
+          <h3>{name}</h3>
+        </Link>
+        <p>{twitterName}</p>
       </InfoBox>
 
       <ButtonBox>
+        <p>
+          Votes: <span>{votes && votes.length}</span>
+        </p>
+
         <CustomButton background="#f6f8f9" onClick={() => onOpen()}>
           Revert Vote
         </CustomButton>
       </ButtonBox>
 
-      <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent p="32px" borderRadius="4px" minWidth="550px">
-          <ModalHeader>
-            Are you sure you want to unvote:
-            <StyledModalHeader>{guest.name}</StyledModalHeader>
-          </ModalHeader>
-          <ModalBody>
-            You are no longer gonna spread love to this guest.
-          </ModalBody>
-
-          <ModalFooter alignItems="center" m="16px 0 0 0">
-            <CloseModal onClick={onClose}>Close</CloseModal>
-
-            <CustomButton
-              appearance="secondary"
-              margin="0 0 0 24px"
-              onClick={() => handleUnVote(guest._id)}
-            >
-              Yes, delete guest
-            </CustomButton>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Box>
+      <DeleteModal
+        handleUnVote={handleUnVote}
+        name={name}
+        id={_id}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
+    </Card>
   );
 };
 
