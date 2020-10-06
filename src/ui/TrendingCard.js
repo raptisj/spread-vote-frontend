@@ -75,7 +75,8 @@ const ImageBox = styled.div`
 `;
 
 const TrendingCard = ({ hasVoted = false, card }) => {
-  // console.log(hasVoted);
+  const { twitterName, twitterImage, votes, name } = card;
+
   return (
     <Card hasVoted={hasVoted}>
       <span>Voted</span>
@@ -83,18 +84,18 @@ const TrendingCard = ({ hasVoted = false, card }) => {
         <Image
           rounded="9999px"
           size="150px"
-          src="https://images.pexels.com/photos/3775168/pexels-photo-3775168.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-          alt="Segun Adebayo"
+          src={twitterImage}
+          alt={name}
           margin="0 auto"
           display="block"
           p="16px"
           objectFit="cover"
         />
-        <span>{card.votes.length}</span>
+        <span>{votes.length}</span>
       </ImageBox>
       <Box textAlign="center">
-        <h3>{card.name}</h3>
-        <span>{card.twitterName}</span>
+        <h3>{name}</h3>
+        <span>{twitterName}</span>
       </Box>
     </Card>
   );

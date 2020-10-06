@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { authSelector, currentUser } from "../redux/slices/auth";
 import { getTrendingGuests, guestsSelector } from "../redux/slices/guests";
 import GlobalSpinner from "../ui/GlobalSpinner";
+import { getSinglePodcast, podcastsSelector } from "../redux/slices/podcasts";
 
 const categoryData = [
   {
@@ -35,23 +36,29 @@ const categoryData = [
   },
 ];
 
-const Landing = () => {
+const Landing = (props) => {
   const dispatch = useDispatch();
   const { token, isAuthenticated, user, loading } = useSelector(authSelector);
   const { loading: guestLoading, guests } = useSelector(guestsSelector);
+  const { loading: podcastLoading, singlePodcast } = useSelector(
+    podcastsSelector
+  );
 
   useEffect(() => {
     dispatch(getTrendingGuests());
+    dispatch(getSinglePodcast(props.match.params.podId));
+
     if (isAuthenticated) {
       dispatch(currentUser(token));
     }
-  }, [dispatch, token, isAuthenticated]);
+  }, [dispatch, token, isAuthenticated, props.match.params.podId]);
 
   if (isAuthenticated) {
     if (loading || guestLoading || user === null) return <GlobalSpinner />;
   }
 
-  if (loading || guestLoading) return <GlobalSpinner />;
+  if (loading || guestLoading || podcastLoading || singlePodcast === null)
+    return <GlobalSpinner />;
 
   return (
     <React.Fragment>
@@ -64,7 +71,7 @@ const Landing = () => {
         margin="0 auto"
         maxWidth="1280px"
       >
-        <About />
+        <About singlePodcast={singlePodcast} />
         <Box gridRow="1 / -1">
           <Categories categoryData={categoryData} />
         </Box>

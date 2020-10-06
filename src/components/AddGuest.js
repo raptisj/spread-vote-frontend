@@ -6,7 +6,6 @@ import {
   FormLabel,
   FormHelperText,
   Image,
-  CircularProgress,
 } from "@chakra-ui/core";
 import styled from "@emotion/styled";
 import CustomButton from "../ui/Button";
@@ -24,6 +23,7 @@ import { isEmpty } from "../utils/helperFunctions";
 import GlobalSpinner from "../ui/GlobalSpinner";
 import { authSelector } from "../redux/slices/auth";
 import FullWidthCard from "../ui/FullWidthCard";
+import SmallSpinner from "../ui/SmallSpinner";
 
 const Divider = styled.div`
   height: 1px;
@@ -68,7 +68,7 @@ const ScrapeLoader = styled.div`
 `;
 
 const Body = styled.div`
-  min-height: 320px;
+  padding: 32px 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -120,12 +120,13 @@ const AddGuest = () => {
       name: twitterData.name,
       twitterName: twitterData.twitterName,
       bio: twitterData.bio,
+      votes: [user._id],
     };
 
     dispatch(createGuest(data));
   };
 
-  if (loading) return <GlobalSpinner />;
+  if (loading || user === null) return <GlobalSpinner />;
 
   return (
     <Box p="32px" margin="0 auto" maxWidth="1280px">
@@ -146,7 +147,7 @@ const AddGuest = () => {
             value={inputValue}
           />
           <FormHelperText id="guest-name">
-            Paste user's Twitter name. Typing it won't work.
+            Paste guest's Twitter name. Typing won't work.
           </FormHelperText>
 
           <Body>
@@ -173,7 +174,9 @@ const AddGuest = () => {
               {twitterData !== null && twitterData._id && (
                 <React.Fragment>
                   <GuestExistsMsg>
-                    This user already exits. Go and vote.
+                    {twitterData.votes.includes(user._id)
+                      ? "You have already voted for this guest."
+                      : "This guest already exits. Go and vote."}
                   </GuestExistsMsg>
 
                   <Link to={`/guests/${twitterData._id}`}>
@@ -190,12 +193,10 @@ const AddGuest = () => {
               {isEmpty(twitterData) && twitterData !== null && (
                 <div>Could not find guest</div>
               )}
+
               {scrapeLoader && (
                 <ScrapeLoader>
-                  <CircularProgress
-                    isIndeterminate
-                    color="green"
-                  ></CircularProgress>
+                  <SmallSpinner />
                 </ScrapeLoader>
               )}
             </div>
@@ -210,7 +211,7 @@ const AddGuest = () => {
                 isEmpty(twitterData) ||
                 (twitterData !== null && twitterData._id)
               }
-              // isLoading={loading}
+              isLoading={loading}
             >
               Submit
             </CustomButton>

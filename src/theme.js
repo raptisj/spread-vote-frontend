@@ -28,7 +28,9 @@ export default {
     gray: {
       ...theme.colors.gray,
       soft: "#f6f8f9",
+      mid: "#e4eaec",
       hover: "#edf2f5",
+      midHover: "#d7e6d6",
     },
   },
   borderRadius: {

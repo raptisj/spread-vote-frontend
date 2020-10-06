@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box, Grid, Button } from "@chakra-ui/core";
+import { Box, Grid } from "@chakra-ui/core";
 import styled from "@emotion/styled";
 import CustomButton from "../ui/Button";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,16 +9,14 @@ import { getSingleGuest } from "../redux/slices/guests";
 import GoBack from "../ui/GoBack";
 import GlobalSpinner from "../ui/GlobalSpinner";
 import Layout from "../screens/Layout";
+import { getSinglePodcast } from "../redux/slices/podcasts";
+import { useParams } from "react-router-dom";
 
 const InfoCard = styled(Box)`
   background: #fff;
   padding: 32px;
   border-radius: 4px;
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.15);
-
-  h3 {
-    color: ${(props) => props.theme.colors.green.brand};
-  }
 
   p:last-child {
     color: #718096;
@@ -56,6 +54,21 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+
+  h2 {
+    color: ${(props) => props.theme.colors.black.dark};
+  }
+
+  h3 {
+    color: ${(props) => props.theme.colors.green.brand};
+    display: inline-block;
+  }
+
+  a:hover {
+    h3 {
+      color: ${(props) => props.theme.colors.green.hover};
+    }
+  }
 `;
 
 const Votes = styled.div`
@@ -81,13 +94,15 @@ const SingleGuest = (props) => {
   const dispatch = useDispatch();
   const { singleGuest, loading } = useSelector(guestsSelector);
   const { isAuthenticated, user } = useSelector(authSelector);
+  const { podId, id } = useParams();
 
   useEffect(() => {
-    dispatch(getSingleGuest(props.match.params.id));
+    dispatch(getSingleGuest(id));
+    dispatch(getSinglePodcast(podId));
     if (isAuthenticated) {
       dispatch(currentUser());
     }
-  }, [dispatch, props.match.params.id, isAuthenticated]);
+  }, [dispatch, id, podId, isAuthenticated]);
 
   if (singleGuest === null) return <GlobalSpinner />;
   const { name, twitterName, twitterImage, votes, bio } = singleGuest;
@@ -102,7 +117,7 @@ const SingleGuest = (props) => {
 
   return (
     <Layout>
-      <GoBack path="/guests/" />
+      <GoBack path={`/podcasts/${podId}/guests/`} />
 
       <Grid templateColumns="1fr 26px 1fr" gap="16px">
         <Box w="100%" gridColumn="1 / 3">
@@ -127,7 +142,13 @@ const SingleGuest = (props) => {
             <Header>
               <div>
                 <h2>{name}</h2>
-                <h3>{twitterName}</h3>
+                <a
+                  href={`https://twitter.com/${twitterName}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <h3>{twitterName}</h3>
+                </a>
               </div>
               <div>
                 <Votes>
@@ -139,7 +160,7 @@ const SingleGuest = (props) => {
             <Divider />
 
             <Bio>{bio}</Bio>
-            <p>Has appeared before in the show</p>
+            {/* <p>Has appeared before in the show</p> */}
           </Box>
           <Box mt="auto" textAlign="right">
             {isAuthenticated && (

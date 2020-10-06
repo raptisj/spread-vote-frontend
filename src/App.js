@@ -13,11 +13,10 @@ import SignUp from "./components/auth/SignUp";
 import Login from "./components/auth/Login";
 import AddGuest from "./components/AddGuest";
 import AllGuest from "./components/AllGuests";
+import Podcasts from "./components/Podcasts";
 import RedirectRoute from "./utils/RedirectRoute";
 import PrivateRoute from "./utils/PrivateRoute";
 import styled from "@emotion/styled";
-
-// fuse.js
 
 const BackgroundShape = styled.div`
   position: fixed;
@@ -67,12 +66,25 @@ function App() {
         <Navigation />
 
         <Switch>
-          <Route exact path="/" component={Landing} />
-          <Route exact path="/guests/" component={AllGuest} />
-          <Route exact path="/guests/:id" component={SingleGuest} />
+          <Route exact path="/" component={Podcasts} />
+          <Route exact path="/podcasts/:podId" component={Landing} />
+          <Route exact path="/podcasts/:podId/guests/" component={AllGuest} />
+          <Route
+            exact
+            path="/podcasts/:podId/guests/:id"
+            component={SingleGuest}
+          />
           <PrivateRoute exact path="/vote/" component={VotingForm} />
-          <PrivateRoute exact path="/dash/" component={Dashboard} />
-          <PrivateRoute exact path="/add-guest/" component={AddGuest} />
+          <PrivateRoute
+            exact
+            path="/podcasts/:podId/dash/"
+            component={Dashboard}
+          />
+          <PrivateRoute
+            exact
+            path="/podcasts/:podId/add-guest/"
+            component={AddGuest}
+          />
           <RedirectRoute exact path="/auth/signup/" component={SignUp} />
           <RedirectRoute exact path="/auth/login/" component={Login} />
         </Switch>

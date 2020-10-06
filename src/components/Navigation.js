@@ -1,10 +1,11 @@
 import React from "react";
 import { Box } from "@chakra-ui/core";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import styled from "@emotion/styled";
 import { useDispatch } from "react-redux";
 import { authSelector, logout } from "../redux/slices/auth";
 import { useSelector } from "react-redux";
+import { podcastsSelector } from "../redux/slices/podcasts";
 
 const Nav = styled.nav`
   display: flex;
@@ -68,6 +69,8 @@ const LogoLink = styled(NavLink)`
 const Navigation = () => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector(authSelector);
+  const { singlePodcast } = useSelector(podcastsSelector);
+  const { pathname } = useLocation();
 
   return (
     <Nav>
@@ -78,9 +81,23 @@ const Navigation = () => {
       <Box display="flex" justifyContent="end">
         {isAuthenticated ? (
           <React.Fragment>
-            <NavLink to="/dash/">Dashboard</NavLink>
-            <NavLink to="/vote/">Vote</NavLink>
-            <NavLink to="/guests/">Guests</NavLink>
+            {pathname !== "/" ? (
+              <Link to={`/`}>Podcasts</Link>
+            ) : (
+              <NavLink to={`/`}>Podcasts</NavLink>
+            )}
+
+            {pathname !== "/" && singlePodcast && (
+              <NavLink to={`/podcasts/${singlePodcast._id}/dash/`}>
+                Dashboard
+              </NavLink>
+            )}
+
+            {pathname !== "/" && singlePodcast && (
+              <NavLink to={`/podcasts/${singlePodcast._id}/guests/`}>
+                Guests
+              </NavLink>
+            )}
 
             <a href="#0" onClick={() => dispatch(logout())}>
               Log out
@@ -88,7 +105,18 @@ const Navigation = () => {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <NavLink to="/guests/">Guests</NavLink>
+            {pathname !== "/" ? (
+              <Link to={`/`}>Podcasts</Link>
+            ) : (
+              <NavLink to={`/`}>Podcasts</NavLink>
+            )}
+
+            {pathname !== "/" && singlePodcast && (
+              <NavLink to={`/podcasts/${singlePodcast._id}/guests/`}>
+                Guests
+              </NavLink>
+            )}
+
             <NavLink to="/auth/login">Log in</NavLink>
             <NavLink to="/auth/signup">Sign up</NavLink>
           </React.Fragment>

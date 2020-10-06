@@ -1,20 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
-  // Grid,
   Button,
   Input,
   FormControl,
   FormLabel,
-  // FormErrorMessage,
   FormHelperText,
   RadioButtonGroup,
-  // RadioGroup,
-  // Radio,
 } from "@chakra-ui/core";
+import Fuse from "fuse.js";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllGuests, guestsSelector } from "../redux/slices/guests";
+import { authSelector, currentUser } from "../redux/slices/auth";
 import styled from "@emotion/styled";
 import CustomButton from "../ui/Button";
 import LinkButton from "../ui/LinkButton";
+import { Link } from "react-router-dom";
 
 const Divider = styled.div`
   height: 1px;
@@ -41,6 +42,31 @@ const ButtonRadios = styled(RadioButtonGroup)`
   grid-gap: 8px;
 `;
 
+const SearchResults = styled(Box)`
+  background: ${(props) => props.theme.colors.gray.mid};
+  display: flex;
+  padding: 10px 16px;
+  justify-content: space-between;
+
+  h3 {
+    color: ${(props) => props.theme.colors.black.dark};
+  }
+
+  p {
+    font-size: 18px;
+    color: ${(props) => props.theme.colors.black.dark};
+  }
+
+  &:hover {
+    background: #62c49d;
+
+    h3,
+    p {
+      color: ${(props) => props.theme.colors.white};
+    }
+  }
+`;
+
 const CustomRadio = React.forwardRef((props, ref) => {
   const { isChecked, isDisabled, value, ...rest } = props;
   return (
@@ -59,12 +85,50 @@ const CustomRadio = React.forwardRef((props, ref) => {
   );
 });
 
+// fuse stuff
+const keys = {
+  NAME: "name",
+  TWITTER_NAME: "twitterName",
+};
+
+const { NAME, TWITTER_NAME } = keys;
+
+const fuseOptions = {
+  shouldSort: true,
+  threshold: 0.4,
+  location: 0,
+  minMatchCharLength: 3,
+  keys: [NAME, TWITTER_NAME],
+};
+
 const VotingForm = () => {
+  const [query, setQuery] = useState("");
   // const [value, setValue] = React.useState("Comedy");
+  const dispatch = useDispatch();
+  const { guests, loading } = useSelector(guestsSelector);
+  const { isAuthenticated, user } = useSelector(authSelector);
+
+  useEffect(() => {
+    dispatch(getAllGuests());
+
+    if (isAuthenticated) {
+      dispatch(currentUser());
+    }
+  }, [dispatch, isAuthenticated]);
+
+  const onChange = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const fuse = new Fuse(guests, fuseOptions);
+  const searchResults = query ? fuse.search(query) : null;
 
   return (
     <Box p="32px" margin="0 auto" maxWidth="1280px">
       <h2>Voting Form</h2>
+      {/* <form> */}
+
+      {/* </form> */}
       <FormControl maxWidth="700px" m="32px 0">
         <FormLabel htmlFor="name" pb="8px">
           Search for Guest
@@ -74,11 +138,25 @@ const VotingForm = () => {
           id="name"
           aria-describedby="guest-name"
           boxSizing="border-box"
+          onChange={(e) => onChange(e)}
         />
 
         <FormHelperText id="guest-name">
           Search either by name or twitter name.
         </FormHelperText>
+
+        {searchResults !== null && (
+          <Box mt="24px">
+            {searchResults.map((result, i) => (
+              <Link to={`/`}>
+                <SearchResults>
+                  <h3>{result.item.name}</h3>
+                  <p>{result.item.votes.length}</p>
+                </SearchResults>
+              </Link>
+            ))}
+          </Box>
+        )}
 
         <Divider />
 

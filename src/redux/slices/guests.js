@@ -239,6 +239,7 @@ export const createGuest = (twitterData) => async (dispatch, getState) => {
     const res = await axios.post(apiUrl, twitterData, tokenConfig(getState));
 
     dispatch(createGuestSuccess(res.data));
+    dispatch(updateGuests(res.data));
     window.location.replace("/guests");
   } catch (error) {
     if (error) {
