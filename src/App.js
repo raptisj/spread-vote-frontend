@@ -37,7 +37,7 @@ const BackgroundShape = styled.div`
     height: 100%;
   }
 
-  &&::after {
+  &::after {
     content: "";
     position: absolute;
     background: #19c39c07;

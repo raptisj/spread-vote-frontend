@@ -99,12 +99,14 @@ const SingleGuest = (props) => {
   useEffect(() => {
     dispatch(getSingleGuest(id));
     dispatch(getSinglePodcast(podId));
+
     if (isAuthenticated) {
       dispatch(currentUser());
     }
   }, [dispatch, id, podId, isAuthenticated]);
 
-  if (singleGuest === null) return <GlobalSpinner />;
+  if (loading || singleGuest === null) return <GlobalSpinner />;
+
   const { name, twitterName, twitterImage, votes, bio } = singleGuest;
 
   const handleVote = () => {
@@ -152,7 +154,7 @@ const SingleGuest = (props) => {
               </div>
               <div>
                 <Votes>
-                  <span>Votes:</span> {votes.length}
+                  <span>Votes:</span> {votes && votes.length}
                 </Votes>
               </div>
             </Header>
@@ -160,7 +162,6 @@ const SingleGuest = (props) => {
             <Divider />
 
             <Bio>{bio}</Bio>
-            {/* <p>Has appeared before in the show</p> */}
           </Box>
           <Box mt="auto" textAlign="right">
             {isAuthenticated && (

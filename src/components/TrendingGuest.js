@@ -30,7 +30,7 @@ const TrendingGuest = ({ guests }) => {
   const { podId } = useParams();
 
   return (
-    <Box p="32px" margin="0 auto" maxWidth="1280px">
+    <Box>
       <Box
         display="flex"
         alignItems="center"
@@ -54,10 +54,6 @@ const TrendingGuest = ({ guests }) => {
           </Link>
         ))}
       </Grid>
-      {/* 
-      <Box textAlign="center" mt="24px">
-        <LinkButton to="/vote/">Vote your Guest</LinkButton>
-      </Box> */}
     </Box>
   );
 };

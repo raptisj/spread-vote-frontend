@@ -41,12 +41,12 @@ const AllGuest = () => {
   const { podId } = useParams();
 
   useEffect(() => {
-    dispatch(getAllGuests());
+    dispatch(getAllGuests(podId));
 
     if (isAuthenticated) {
       dispatch(currentUser());
     }
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch, isAuthenticated, podId]);
 
   if (loading) return <GlobalSpinner />;
 
@@ -59,7 +59,7 @@ const AllGuest = () => {
 
   return (
     <Layout>
-      <GoBack />
+      <GoBack path={`/podcasts/${podId}`} />
       <Box
         display="flex"
         alignItems="center"

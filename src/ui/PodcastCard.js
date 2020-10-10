@@ -1,13 +1,9 @@
 import React from "react";
-import CustomButton from "../ui/Button";
 import styled from "@emotion/styled";
-import { Box, Image, useDisclosure } from "@chakra-ui/core";
-import DeleteModal from "../screens/DeleteModal";
-import { Link } from "react-router-dom";
+import { Box, Image } from "@chakra-ui/core";
 
 const Card = styled(Box)`
   border: none;
-  height: 100px;
   background: #fff;
   border-radius: 4px;
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.15);
@@ -17,7 +13,8 @@ const Card = styled(Box)`
     props.hasVoted ? `1px solid ${props.theme.colors.green.brand}` : null};
   display: flex;
   align-items: center;
-  padding: 0 32px;
+  flex-direction: column;
+  padding: 8px 32px 24px 32px;
 
   h3 {
     color: ${(props) => props.theme.colors.black.dark};
@@ -31,7 +28,6 @@ const Card = styled(Box)`
   &:hover {
     background: #19c39c10;
     box-shadow: 0px 9px 12px rgba(0, 0, 0, 0.15);
-    ${"" /* transform: scale(1.009); */}
     transition: all 0.3s;
 
     img {
@@ -56,10 +52,14 @@ const Card = styled(Box)`
   ${(props) => props.hasVoted && `& > span {display: block;}`}
 
   h3 {
-    font-size: 40px;
-    margin-left: 16px;
+    font-size: 24px;
+    margin-top: 16px;
     color: ${(props) => props.theme.colors.black.dark};
     font-weight: 100;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   h3 + p {
@@ -70,40 +70,42 @@ const Card = styled(Box)`
     color: ${(props) => props.theme.colors.green.brand};
     font-weight: 600;
     font-size: 40px;
-    margin-right: 4px;
+    margin-left: 6px;
   }
 
   p {
-    margin-left: 20px;
+    ${"" /* margin-left: 20px; */}
     font-size: 16px;
     font-weight: 500;
     display: flex;
-    align-items: flex-end;
+    align-items: baseline;
   }
 `;
 const PodcastCard = ({ podcast }) => {
-  const { name, _id } = podcast;
+  const { name, _id, votes } = podcast;
 
   return (
     <Card>
-      {/* <Image
-        rounded="9999px"
-        size="90px"
-        src={twitterImage}
+      <Image
+        size="130px"
+        src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
         alt={name}
         display="block"
         p="8px"
         objectFit="cover"
-      /> */}
+      />
       <Box
         textAlign="center"
         display="flex"
         alignItems="center"
-        justifyContent="space-between"
+        justifyContent="center"
         w="100%"
       >
         <div>
           <h3>{name}</h3>
+          <p>
+            Votes: <span>{votes}</span>
+          </p>
         </div>
       </Box>
     </Card>

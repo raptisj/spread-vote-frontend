@@ -3,7 +3,7 @@ import CustomButton from "../ui/Button";
 import styled from "@emotion/styled";
 import { Box, Image, useDisclosure } from "@chakra-ui/core";
 import DeleteModal from "../screens/DeleteModal";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const BackgroundShape = styled.div`
   position: absolute;
@@ -79,6 +79,7 @@ const ButtonBox = styled(Box)`
 const DashboardCard = ({ guest, handleUnVote, loading }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { name, twitterName, twitterImage, votes, _id } = guest;
+  const { podId } = useParams();
 
   return (
     <Card>
@@ -97,7 +98,7 @@ const DashboardCard = ({ guest, handleUnVote, loading }) => {
         </Link>
       </Box>
       <InfoBox>
-        <Link to={`/guest/${_id}`}>
+        <Link to={`/podcasts/${podId}/guest/${_id}`}>
           <h3>{name}</h3>
         </Link>
         <p>{twitterName}</p>

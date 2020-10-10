@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { tokenConfig, updateGuests, removeGuestsFromUser } from "./auth";
+import { updatePodcast } from "./podcasts";
 
 let url = "http://localhost:4000";
 
@@ -84,15 +85,18 @@ export default guestsSlice.reducer;
  *
  *  GET ALL GUESTS
  */
-export const getAllGuests = () => async (dispatch) => {
+export const getAllGuests = (podId) => async (dispatch, getState) => {
   dispatch(loadGuests());
 
-  let apiUrl = `${url}/guests/`;
+  let apiUrl = `${url}/podcasts/${podId}/guests`;
 
   try {
     const res = await axios.get(apiUrl);
-
+    let po = res.data.map((p) => p.votes);
+    let so = [].concat(...po);
+    // console.log();
     dispatch(getAllGuestsSuccess(res.data));
+    dispatch(updatePodcast(podId, so));
   } catch (error) {
     if (error) {
       if (error.response.status === 400) {
@@ -108,10 +112,10 @@ export const getAllGuests = () => async (dispatch) => {
  *
  *  GET ALL GUESTS
  */
-export const getTrendingGuests = () => async (dispatch) => {
+export const getTrendingGuests = (podId) => async (dispatch) => {
   dispatch(loadGuests());
 
-  let apiUrl = `${url}/guests/?trending=true`;
+  let apiUrl = `${url}/podcasts/${podId}/guests?trending=true`;
 
   try {
     const res = await axios.get(apiUrl);
@@ -230,7 +234,10 @@ export const preFetchGuest = (twitterName) => async (dispatch, getState) => {
  *
  *  CREATE GUEST
  */
-export const createGuest = (twitterData) => async (dispatch, getState) => {
+export const createGuest = (twitterData, podId) => async (
+  dispatch,
+  getState
+) => {
   dispatch(loadGuests());
 
   let apiUrl = `${url}/guests/create`;
@@ -240,7 +247,7 @@ export const createGuest = (twitterData) => async (dispatch, getState) => {
 
     dispatch(createGuestSuccess(res.data));
     dispatch(updateGuests(res.data));
-    window.location.replace("/guests");
+    window.location.replace(`/podcasts/${podId}/guests`);
   } catch (error) {
     if (error) {
       if (error.response.status === 400) {

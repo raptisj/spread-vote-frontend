@@ -26,9 +26,15 @@ const SignUp = (props) => {
 
   return (
     <Grid templateColumns="repeat(3, 1fr)" gap="16px">
-      <Box />
+      {/* <Box /> */}
 
-      <Box minHeight="84vh" maxWidth="475px" minWidth="475px" m="0 auto">
+      <Box
+        minHeight="84vh"
+        maxWidth="475px"
+        minWidth="475px"
+        m="0 auto"
+        gridColumn="2 / 3"
+      >
         <SignUpForm
           handleSubmit={handleSubmit}
           getFirstName={setFirstName}
@@ -41,7 +47,7 @@ const SignUp = (props) => {
         />
       </Box>
 
-      <Box />
+      {/* <Box /> */}
     </Grid>
   );
 };

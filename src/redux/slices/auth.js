@@ -51,7 +51,7 @@ const authSlice = createSlice({
 
     updateGuestsSuccess: (state, { payload }) => {
       state.loading = false;
-      state.user = { ...state.user, guests: [...state.user.guests, payload] };
+      state.user = { ...state.user, guests: state.user.guests.push(payload) };
     },
 
     removeGuestsSuccess: (state, { payload }) => {
@@ -170,7 +170,7 @@ export const currentUser = () => async (dispatch, getState) => {
         // window.location.replace("/auth/login");
       } else {
         dispatch(reportFailure());
-        window.location.replace("/add-guest");
+        window.location.replace("/");
       }
     }
   }
@@ -185,7 +185,7 @@ export const updateGuests = (votesData) => async (dispatch, getState) => {
 
   try {
     const res = await axios.patch(apiUrl, votesData, tokenConfig(getState));
-    // console.log(res.data);
+    console.log(res.data);
     dispatch(updateGuestsSuccess(res.data));
   } catch (error) {
     if (error) {

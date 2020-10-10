@@ -20,6 +20,7 @@ export default {
     },
     green: {
       ...theme.colors.green,
+      500: "#19c39c",
       dark: "#2C7A7B",
       soft: "#319795",
       brand: "#19c39c",

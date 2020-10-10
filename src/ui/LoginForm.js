@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Input, FormControl, FormLabel } from "@chakra-ui/core";
+import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import CustomButton from "./Button";
 import PasswordInput from "../ui/PasswordInput";
@@ -25,6 +26,15 @@ const Card = styled(Box)`
   input {
     margin-bottom: 16px;
     border: 1px solid #e6e6e6;
+  }
+
+  p {
+    color: ${(props) => props.theme.colors.black.soft};
+    font-size: 14px;
+
+    a {
+      color: ${(props) => props.theme.colors.green.brand};
+    }
   }
 `;
 
@@ -72,6 +82,9 @@ const LoginForm = ({
           </ErrorMessage>
         </FormControl>
 
+        <p>
+          Don't have an account yet? <Link to="/auth/signup">Sign Up</Link>
+        </p>
         <CustomButton
           appearance="primary"
           type="submit"

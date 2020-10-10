@@ -46,9 +46,13 @@ const Podcasts = () => {
         <h2>Spread Vote help podcasters connect with their audience.</h2>
         <p>List of all the guests you have voted.</p>
       </Header>
-      <Grid templateColumns="repeat(1, 1fr)" gap="16px" mt="32px">
+      <Grid
+        templateColumns={["repeat(1, 1fr)", "repeat(3, 1fr)", "repeat(5, 1fr)"]}
+        gap="16px"
+        mt="32px"
+      >
         {podcasts.map((podcast, i) => (
-          <Link to={`/podcasts/${podcast._id}`} key={i}>
+          <Link to={`/podcasts/${podcast._id}`} key={i} title={podcast.name}>
             <PodcastCard podcast={podcast} />
           </Link>
         ))}

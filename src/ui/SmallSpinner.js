@@ -1,8 +1,18 @@
 import React from "react";
-import { CircularProgress } from "@chakra-ui/core";
+import { Spinner } from "@chakra-ui/core";
 
 const SmallSpinner = ({ color = "#19c39c" }) => {
-  return <CircularProgress isIndeterminate color={color}></CircularProgress>;
+  return (
+    <Spinner
+      thickness="3px"
+      speed="0.95s"
+      emptyColor="#19c39c07"
+      color="#19c39c"
+      size="2rem"
+    />
+  );
 };
 
 export default SmallSpinner;
+
+// <CircularProgress isIndeterminate color="#19c39c"></CircularProgress>;

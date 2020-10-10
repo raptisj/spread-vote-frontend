@@ -10,7 +10,7 @@ import {
 import styled from "@emotion/styled";
 import CustomButton from "../ui/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import {
   preFetchGuest,
@@ -24,6 +24,7 @@ import GlobalSpinner from "../ui/GlobalSpinner";
 import { authSelector } from "../redux/slices/auth";
 import FullWidthCard from "../ui/FullWidthCard";
 import SmallSpinner from "../ui/SmallSpinner";
+import { getSinglePodcast, podcastsSelector } from "../redux/slices/podcasts";
 
 const Divider = styled.div`
   height: 1px;
@@ -79,19 +80,24 @@ const Body = styled.div`
 `;
 
 // @jdnoc
+
+//  @anthilemoon
 const AddGuest = () => {
   const dispatch = useDispatch();
   const { twitterData, loading, scrapeLoader } = useSelector(guestsSelector);
   const { isAuthenticated, user } = useSelector(authSelector);
+  const { singlePodcast } = useSelector(podcastsSelector);
   const [inputValue, setInputValue] = useState("");
+  const { podId } = useParams();
 
   useEffect(() => {
-    dispatch(getAllGuests());
+    dispatch(getAllGuests(podId));
+    dispatch(getSinglePodcast(podId));
 
     if (isAuthenticated) {
       dispatch(currentUser());
     }
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch, isAuthenticated, podId]);
 
   const handlePaste = (e) => {
     let name = e.clipboardData.getData("Text").replace(/[@]/, "");
@@ -104,7 +110,7 @@ const AddGuest = () => {
   };
 
   const handleChange = (e) => {
-    var keycode = e.keyCode ? e.keyCode : e.which;
+    let keycode = e.keyCode ? e.keyCode : e.which;
     if (keycode === 8) {
       setInputValue("");
     } else {
@@ -120,13 +126,16 @@ const AddGuest = () => {
       name: twitterData.name,
       twitterName: twitterData.twitterName,
       bio: twitterData.bio,
+      podcast_id: podId,
+      podcast_name: singlePodcast.name,
       votes: [user._id],
     };
 
-    dispatch(createGuest(data));
+    dispatch(createGuest(data, podId));
   };
 
-  if (loading || user === null) return <GlobalSpinner />;
+  if (loading || user === null || singlePodcast === null)
+    return <GlobalSpinner />;
 
   return (
     <Box p="32px" margin="0 auto" maxWidth="1280px">
@@ -179,7 +188,7 @@ const AddGuest = () => {
                       : "This guest already exits. Go and vote."}
                   </GuestExistsMsg>
 
-                  <Link to={`/guests/${twitterData._id}`}>
+                  <Link to={`/podcasts/${podId}/guests/${twitterData._id}`}>
                     <FullWidthCard
                       card={twitterData}
                       hasVoted={

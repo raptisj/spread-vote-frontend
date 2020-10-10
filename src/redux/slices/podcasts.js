@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { tokenConfig, updateGuests, removeGuestsFromUser } from "./auth";
 
 let url = "http://localhost:4000";
 
@@ -22,12 +23,17 @@ const podcastsSlice = createSlice({
       state.loading = false;
       state.hasErrors = false;
       state.podcasts = payload;
+      state.singlePodcast = null;
     },
 
     getSinglePodcastsSuccess: (state, { payload }) => {
       state.loading = false;
       state.hasErrors = false;
       state.singlePodcast = payload;
+    },
+
+    updatePodcastsSuccess: (state, { payload }) => {
+      state.loading = false;
     },
 
     podcastsFailure: (state) => {
@@ -41,6 +47,7 @@ export const {
   loadPodcasts,
   getAllPodcastsSuccess,
   getSinglePodcastsSuccess,
+  updatePodcastsSuccess,
   podcastsFailure,
 } = podcastsSlice.actions;
 
@@ -84,6 +91,30 @@ export const getSinglePodcast = (id) => async (dispatch) => {
     const res = await axios.get(apiUrl);
 
     dispatch(getSinglePodcastsSuccess(res.data));
+  } catch (error) {
+    if (error) {
+      if (error.response.status === 400) {
+        dispatch(podcastsFailure());
+      } else {
+        dispatch(podcastsFailure());
+      }
+    }
+  }
+};
+
+/**
+ *
+ *  UPDATE PODCAST
+ */
+export const updatePodcast = (id, newVotes) => async (dispatch, getState) => {
+  dispatch(loadPodcasts());
+
+  let apiUrl = `${url}/podcasts/${id}`;
+
+  try {
+    const res = await axios.patch(apiUrl, newVotes, tokenConfig(getState));
+
+    dispatch(updatePodcastsSuccess(res.data));
   } catch (error) {
     if (error) {
       if (error.response.status === 400) {

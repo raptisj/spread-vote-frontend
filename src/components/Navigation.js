@@ -5,7 +5,6 @@ import styled from "@emotion/styled";
 import { useDispatch } from "react-redux";
 import { authSelector, logout } from "../redux/slices/auth";
 import { useSelector } from "react-redux";
-import { podcastsSelector } from "../redux/slices/podcasts";
 
 const Nav = styled.nav`
   display: flex;
@@ -69,8 +68,10 @@ const LogoLink = styled(NavLink)`
 const Navigation = () => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector(authSelector);
-  const { singlePodcast } = useSelector(podcastsSelector);
   const { pathname } = useLocation();
+
+  // grab podcast id from url
+  const podId = pathname.split("/")[2];
 
   return (
     <Nav>
@@ -87,16 +88,12 @@ const Navigation = () => {
               <NavLink to={`/`}>Podcasts</NavLink>
             )}
 
-            {pathname !== "/" && singlePodcast && (
-              <NavLink to={`/podcasts/${singlePodcast._id}/dash/`}>
-                Dashboard
-              </NavLink>
+            {pathname !== "/" && (
+              <NavLink to={`/podcasts/${podId}/dash/`}>Dashboard</NavLink>
             )}
 
-            {pathname !== "/" && singlePodcast && (
-              <NavLink to={`/podcasts/${singlePodcast._id}/guests/`}>
-                Guests
-              </NavLink>
+            {pathname !== "/" && (
+              <NavLink to={`/podcasts/${podId}/guests/`}>Guests</NavLink>
             )}
 
             <a href="#0" onClick={() => dispatch(logout())}>
@@ -111,10 +108,8 @@ const Navigation = () => {
               <NavLink to={`/`}>Podcasts</NavLink>
             )}
 
-            {pathname !== "/" && singlePodcast && (
-              <NavLink to={`/podcasts/${singlePodcast._id}/guests/`}>
-                Guests
-              </NavLink>
+            {pathname !== "/" && (
+              <NavLink to={`/podcasts/${podId}/guests/`}>Guests</NavLink>
             )}
 
             <NavLink to="/auth/login">Log in</NavLink>

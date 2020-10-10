@@ -24,6 +24,15 @@ const Header = styled.header`
   }
 `;
 
+const Rows = styled.div`
+  padding: 48px 0 0 0;
+
+  & > h3 {
+    font-size: 30px;
+    color: ${(props) => props.theme.colors.black.soft};
+  }
+`;
+
 const Dashboard = () => {
   const dispatch = useDispatch();
   const { user, loading } = useSelector(authSelector);
@@ -40,9 +49,9 @@ const Dashboard = () => {
     dispatch(unVoteGuest(userData, guestId));
   };
 
-  if (user === null) return <GlobalSpinner />;
-
+  if (loading || user === null) return <GlobalSpinner />;
   if (user.guests.length === 0) return <EmptyDashboard />;
+  const podcastNames = user.guests.map((p) => p);
 
   return (
     <Layout>
@@ -54,16 +63,26 @@ const Dashboard = () => {
         </h2>
         <p>List of all the guests you have voted.</p>
       </Header>
-      <Grid templateColumns="repeat(3, 1fr)" gap="16px" mt="32px">
-        {user.guests.map((guest, i) => (
-          <DashboardCard
-            guest={guest}
-            key={i}
-            handleUnVote={handleUnVote}
-            loading={loading}
-          />
+
+      {user.guests.length > 0 &&
+        podcastNames.map((podcast, i) => (
+          <Rows key={i}>
+            <h3>{podcast.podcast_name}</h3>
+
+            <Grid templateColumns="repeat(3, 1fr)" gap="16px" mt="32px">
+              {user.guests
+                .filter((guest) => guest.podcast_id === podcast.podcast_id)
+                .map((guest, i) => (
+                  <DashboardCard
+                    key={i}
+                    guest={guest}
+                    loading={loading}
+                    handleUnVote={handleUnVote}
+                  />
+                ))}
+            </Grid>
+          </Rows>
         ))}
-      </Grid>
     </Layout>
   );
 };

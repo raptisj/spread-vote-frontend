@@ -1,6 +1,14 @@
 import React from "react";
-import { Box, Input, Grid, FormControl, FormLabel } from "@chakra-ui/core";
+import {
+  Box,
+  Input,
+  Grid,
+  FormControl,
+  FormLabel,
+  Checkbox,
+} from "@chakra-ui/core";
 import styled from "@emotion/styled";
+import { Link } from "react-router-dom";
 import CustomButton from "./Button";
 import PasswordInput from "../ui/PasswordInput";
 
@@ -28,8 +36,26 @@ const Card = styled(Box)`
   }
 
   p {
+    margin-top: 16px;
+    color: ${(props) => props.theme.colors.black.soft};
+    font-size: 14px;
+
+    a {
+      color: ${(props) => props.theme.colors.green.brand};
+    }
+  }
+  ${"" /* 
+  p {
     color: ${(props) => props.theme.colors.red.customRed};
     text-align: center;
+  } */}
+`;
+
+const Terms = styled.div`
+  display: flex;
+
+  p {
+    margin: 0 0 0 8px;
   }
 `;
 
@@ -87,6 +113,11 @@ const SignUpForm = ({
 
         {hasErrors && <p>Email is already register.</p>}
 
+        <Terms>
+          <Checkbox variantColor="green" defaultIsChecked></Checkbox>
+          <p>I have read the Terms of Use.</p>
+        </Terms>
+
         <CustomButton
           appearance="primary"
           type="submit"
@@ -97,6 +128,9 @@ const SignUpForm = ({
         >
           Submit
         </CustomButton>
+        <p>
+          Already have an account? <Link to="/auth/login">Log In</Link>
+        </p>
       </form>
     </Card>
   );

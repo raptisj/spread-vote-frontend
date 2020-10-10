@@ -8,6 +8,10 @@ import { authSelector, currentUser } from "../redux/slices/auth";
 import { getTrendingGuests, guestsSelector } from "../redux/slices/guests";
 import GlobalSpinner from "../ui/GlobalSpinner";
 import { getSinglePodcast, podcastsSelector } from "../redux/slices/podcasts";
+import { useParams } from "react-router-dom";
+import EmptyTrending from "../screens/EmptyTrending";
+import GoBack from "../ui/GoBack";
+import Layout from "../screens/Layout";
 
 const categoryData = [
   {
@@ -36,22 +40,21 @@ const categoryData = [
   },
 ];
 
-const Landing = (props) => {
+const Landing = () => {
   const dispatch = useDispatch();
   const { token, isAuthenticated, user, loading } = useSelector(authSelector);
   const { loading: guestLoading, guests } = useSelector(guestsSelector);
   const { loading: podcastLoading, singlePodcast } = useSelector(
     podcastsSelector
   );
+  const { podId } = useParams();
 
   useEffect(() => {
-    dispatch(getTrendingGuests());
-    dispatch(getSinglePodcast(props.match.params.podId));
+    dispatch(getTrendingGuests(podId));
+    dispatch(getSinglePodcast(podId));
 
-    if (isAuthenticated) {
-      dispatch(currentUser(token));
-    }
-  }, [dispatch, token, isAuthenticated, props.match.params.podId]);
+    isAuthenticated && dispatch(currentUser(token));
+  }, [dispatch, token, isAuthenticated, podId]);
 
   if (isAuthenticated) {
     if (loading || guestLoading || user === null) return <GlobalSpinner />;
@@ -61,8 +64,10 @@ const Landing = (props) => {
     return <GlobalSpinner />;
 
   return (
-    <React.Fragment>
-      <TrendingGuest guests={guests} />
+    <Layout>
+      <GoBack />
+      {guests.length > 0 && <TrendingGuest guests={guests} />}
+      {guests.length === 0 && <EmptyTrending />}
       <Grid
         templateColumns="repeat(2, 1fr)"
         templateRows="repeat(2, 1fr)"
@@ -76,7 +81,7 @@ const Landing = (props) => {
           <Categories categoryData={categoryData} />
         </Box>
       </Grid>
-    </React.Fragment>
+    </Layout>
   );
 };
 
