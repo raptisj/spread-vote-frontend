@@ -102,7 +102,6 @@ const AddGuest = () => {
   const [inputValue, setInputValue] = useState("");
   const { podId } = useParams();
 
-  console.log(twitterData);
   useEffect(() => {
     dispatch(getAllGuests(podId));
     dispatch(getSinglePodcast(podId));
@@ -119,7 +118,7 @@ const AddGuest = () => {
     const data = {
       name,
     };
-    dispatch(preFetchGuest(data));
+    dispatch(preFetchGuest(data, podId));
   };
 
   const handleChange = (e) => {
@@ -135,9 +134,9 @@ const AddGuest = () => {
     e.preventDefault();
 
     const data = {
-      twitterImage: twitterData.twitterImage,
+      twitter_image: twitterData.twitter_image,
       name: twitterData.name,
-      twitterName: twitterData.twitterName,
+      twitter_name: twitterData.twitter_name,
       bio: twitterData.bio,
       podcast_id: podId,
       podcast_name: singlePodcast.name,
@@ -195,14 +194,14 @@ const AddGuest = () => {
                   <Image
                     rounded="9999px"
                     size="150px"
-                    src={twitterData.twitterImage}
+                    src={twitterData.twitter_image}
                     alt={twitterData.name}
                     display="block"
                     p="16px"
                     objectFit="cover"
                   />
                   <h3>{twitterData.name}</h3>
-                  <span>{twitterData.twitterName}</span>
+                  <span>{twitterData.twitter_name}</span>
                   <p>{twitterData.bio}</p>
                 </ImageBox>
               )}

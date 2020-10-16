@@ -9,7 +9,6 @@ import { getSingleGuest } from "../redux/slices/guests";
 import GoBack from "../ui/GoBack";
 import GlobalSpinner from "../ui/GlobalSpinner";
 import Layout from "../screens/Layout";
-import { getSinglePodcast } from "../redux/slices/podcasts";
 import { useParams } from "react-router-dom";
 
 const InfoCard = styled(Box)`
@@ -97,7 +96,6 @@ const SingleGuest = () => {
   const { podId, id } = useParams();
 
   useEffect(() => {
-    // dispatch(getSinglePodcast(podId));
     dispatch(getSingleGuest(podId, id));
 
     if (isAuthenticated) {
@@ -105,10 +103,9 @@ const SingleGuest = () => {
     }
   }, [dispatch, id, podId, isAuthenticated]);
 
-  // console.log(singleGuest);
   if (loading || singleGuest === null) return <GlobalSpinner />;
 
-  const { name, twitterName, twitterImage, votes, bio } = singleGuest;
+  const { name, twitter_name, twitter_image, votes, bio } = singleGuest;
 
   const handleVote = () => {
     let userData = {
@@ -126,7 +123,7 @@ const SingleGuest = () => {
       <Grid templateColumns="1fr 26px 1fr" gap="16px">
         <Box w="100%" gridColumn="1 / 3">
           <img
-            src={twitterImage}
+            src={twitter_image}
             alt="user"
             style={{
               display: "flex",
@@ -147,11 +144,11 @@ const SingleGuest = () => {
               <div>
                 <h2>{name}</h2>
                 <a
-                  href={`https://twitter.com/${twitterName}`}
+                  href={`https://twitter.com/${twitter_name}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <h3>{twitterName}</h3>
+                  <h3>{twitter_name}</h3>
                 </a>
               </div>
               <div>

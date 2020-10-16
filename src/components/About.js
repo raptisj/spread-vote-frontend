@@ -27,6 +27,11 @@ const Container = styled(Box)`
 
   h2 {
     margin-bottom: 16px;
+
+    span {
+      color: #19c39c;
+      font-size: 34px;
+    }
   }
 
   p {
@@ -38,7 +43,9 @@ const About = ({ singlePodcast }) => {
   const { name, about } = singlePodcast;
   return (
     <Container>
-      <h2>About {name}</h2>
+      <h2>
+        About <span> {name} </span>
+      </h2>
       <p>{about}</p>
     </Container>
   );

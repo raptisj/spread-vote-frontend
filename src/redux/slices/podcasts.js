@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { tokenConfig } from "./auth";
 
 let url = "http://localhost:4000";
 
@@ -32,11 +31,6 @@ const podcastsSlice = createSlice({
       state.singlePodcast = payload;
     },
 
-    updatePodcastsSuccess: (state, { payload }) => {
-      state.loading = false;
-      state.podcasts = payload;
-    },
-
     podcastsFailure: (state) => {
       state.loading = false;
       state.hasErrors = true;
@@ -48,7 +42,6 @@ export const {
   loadPodcasts,
   getAllPodcastsSuccess,
   getSinglePodcastsSuccess,
-  updatePodcastsSuccess,
   podcastsFailure,
 } = podcastsSlice.actions;
 
@@ -105,24 +98,24 @@ export const getSinglePodcast = (id) => async (dispatch) => {
 
 /**
  *
- *  UPDATE PODCAST
- */
-export const updatePodcast = (id, newVotes) => async (dispatch, getState) => {
-  dispatch(loadPodcasts());
+//  *  UPDATE PODCAST
+//  */
+// export const updatePodcast = (id, newVotes) => async (dispatch, getState) => {
+//   dispatch(loadPodcasts());
 
-  let apiUrl = `${url}/podcasts/${id}`;
+//   let apiUrl = `${url}/podcasts/${id}`;
 
-  try {
-    const res = await axios.patch(apiUrl, newVotes, tokenConfig(getState));
+//   try {
+//     const res = await axios.patch(apiUrl, newVotes, tokenConfig(getState));
 
-    dispatch(updatePodcastsSuccess(res.data));
-  } catch (error) {
-    if (error) {
-      if (error.response.status === 400) {
-        dispatch(podcastsFailure());
-      } else {
-        dispatch(podcastsFailure());
-      }
-    }
-  }
-};
+//     dispatch(updatePodcastsSuccess(res.data));
+//   } catch (error) {
+//     if (error) {
+//       if (error.response.status === 400) {
+//         dispatch(podcastsFailure());
+//       } else {
+//         dispatch(podcastsFailure());
+//       }
+//     }
+//   }
+// };

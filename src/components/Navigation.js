@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 import { useDispatch } from "react-redux";
 import { authSelector, logout } from "../redux/slices/auth";
 import { useSelector } from "react-redux";
+import { podcastsSelector } from "../redux/slices/podcasts";
 
 const Nav = styled.nav`
   display: flex;
@@ -65,9 +66,31 @@ const LogoLink = styled(NavLink)`
   }
 `;
 
+const PodcastLink = styled(Link)`
+  && {
+    color: ${(props) => props.theme.colors.green.brand};
+    background: #19c39c20;
+    font-size: 20px;
+    font-weight: 600;
+    padding: 8px;
+    margin-right: 16px;
+
+    &:hover {
+      background: ${(props) => props.theme.colors.red.customRed};
+      color: #fff;
+    }
+
+    &:hover::after,
+    &:active::after {
+      display: none;
+    }
+  }
+`;
+
 const Navigation = () => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector(authSelector);
+  const { singlePodcast } = useSelector(podcastsSelector);
   const { pathname } = useLocation();
 
   // grab podcast id from url
@@ -79,7 +102,12 @@ const Navigation = () => {
         <span>Spread</span>
         <span>Vote</span>
       </LogoLink>
-      <Box display="flex" justifyContent="end">
+      <Box display="flex" justifyContent="end" alignItems="center">
+        {singlePodcast !== null && (
+          <PodcastLink to={`/podcasts/${podId}/`}>
+            {singlePodcast.name}
+          </PodcastLink>
+        )}
         {isAuthenticated ? (
           <React.Fragment>
             {pathname !== "/" ? (

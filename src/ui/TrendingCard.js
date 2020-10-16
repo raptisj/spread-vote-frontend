@@ -75,7 +75,7 @@ const ImageBox = styled.div`
 `;
 
 const TrendingCard = ({ hasVoted = false, card }) => {
-  const { twitterName, twitterImage, votes, name } = card;
+  const { twitter_name, twitter_image, votes, name } = card;
 
   return (
     <Card hasVoted={hasVoted}>
@@ -84,7 +84,7 @@ const TrendingCard = ({ hasVoted = false, card }) => {
         <Image
           rounded="9999px"
           size="150px"
-          src={twitterImage}
+          src={twitter_image}
           alt={name}
           margin="0 auto"
           display="block"
@@ -95,7 +95,7 @@ const TrendingCard = ({ hasVoted = false, card }) => {
       </ImageBox>
       <Box textAlign="center">
         <h3>{name}</h3>
-        <span>{twitterName}</span>
+        <span>{twitter_name}</span>
       </Box>
     </Card>
   );

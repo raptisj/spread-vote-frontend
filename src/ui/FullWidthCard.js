@@ -79,14 +79,14 @@ const Card = styled(Box)`
 `;
 
 const FullWidthCard = ({ hasVoted = false, card }) => {
-  const { name, twitterName, twitterImage, votes } = card;
+  const { name, twitter_name, twitter_image, votes } = card;
   return (
     <Card hasVoted={hasVoted}>
       <span>Voted</span>
       <Image
         rounded="9999px"
         size="90px"
-        src={twitterImage}
+        src={twitter_image}
         alt={name}
         display="block"
         p="8px"
@@ -101,7 +101,7 @@ const FullWidthCard = ({ hasVoted = false, card }) => {
       >
         <div>
           <h3>{name}</h3>
-          <p>{twitterName}</p>
+          <p>{twitter_name}</p>
         </div>
         <p>
           <span>{votes ? votes.length : 0}</span>

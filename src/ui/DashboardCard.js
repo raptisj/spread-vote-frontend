@@ -78,18 +78,17 @@ const ButtonBox = styled(Box)`
 
 const DashboardCard = ({ guest, handleUnVote, loading }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { name, twitterName, twitterImage, votes, _id, podcast_id } = guest;
-  const { podId } = useParams();
+  const { name, twitter_name, twitter_image, votes, _id, podcast_id } = guest;
 
   return (
     <Card>
       <BackgroundShape />
       <Box p="16px 0 0 0" borderBottom="1px solid #e6e6e6" zIndex="1">
-        <Link to={`/guest/${_id}`}>
+        <Link to={`/podcasts/${podcast_id}/guests/${_id}`}>
           <Image
             rounded="full"
             size="150px"
-            src={twitterImage}
+            src={twitter_image}
             alt={name}
             margin="0 auto"
             display="block"
@@ -98,10 +97,10 @@ const DashboardCard = ({ guest, handleUnVote, loading }) => {
         </Link>
       </Box>
       <InfoBox>
-        <Link to={`/podcasts/${podId}/guest/${_id}`}>
+        <Link to={`/podcasts/${podcast_id}/guests/${_id}`}>
           <h3>{name}</h3>
         </Link>
-        <p>{twitterName}</p>
+        <p>{twitter_name}</p>
       </InfoBox>
 
       <ButtonBox>

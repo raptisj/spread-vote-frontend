@@ -74,7 +74,11 @@ function App() {
             path="/podcasts/:podId/guests/:id"
             component={SingleGuest}
           />
-          <PrivateRoute exact path="/vote/" component={VotingForm} />
+          <PrivateRoute
+            exact
+            path="/podcasts/:podId/vote/"
+            component={VotingForm}
+          />
           <PrivateRoute
             exact
             path="/podcasts/:podId/dash/"

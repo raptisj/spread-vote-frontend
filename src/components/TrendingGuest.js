@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Grid } from "@chakra-ui/core";
 import { Link, useParams } from "react-router-dom";
 import TrendingCard from "../ui/TrendingCard";
-// import LinkButton from "../ui/LinkButton";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
 import { authSelector } from "../redux/slices/auth";

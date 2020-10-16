@@ -1,8 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { tokenConfig, updateGuests, removeGuestsFromUser } from "./auth";
-import { updatePodcastsSuccess } from "./podcasts";
-import { updatePodcast } from "./podcasts";
+import { tokenConfig } from "./auth";
 
 let url = "http://localhost:4000";
 
@@ -44,11 +42,6 @@ const guestsSlice = createSlice({
       state.singleGuest = { ...state.singleGuest, votes: payload };
     },
 
-    unVoteGuestSuccess: (state, { payload }) => {
-      state.loading = false;
-      state.singleGuest = { ...state.singleGuest, votes: payload };
-    },
-
     preFetchSuccess: (state, { payload }) => {
       state.loading = false;
       state.scrapeLoader = false;
@@ -73,7 +66,6 @@ export const {
   getAllGuestsSuccess,
   getSingleGuestSuccess,
   voteGuestSuccess,
-  unVoteGuestSuccess,
   preFetchSuccess,
   createGuestSuccess,
   guestsFailure,
@@ -90,57 +82,6 @@ export const getAllGuests = (podId) => async (dispatch, getState) => {
   dispatch(loadGuests());
 
   let apiUrl = `${url}/podcasts/${podId}/guests`;
-
-  try {
-    const res = await axios.get(apiUrl);
-    // let po = res.data.map((p) => p.votes);
-    // let so = [].concat(...po);
-    // console.log();
-    dispatch(getAllGuestsSuccess(res.data));
-    // dispatch(updatePodcast(podId, so));
-  } catch (error) {
-    if (error) {
-      if (error.response.status === 400) {
-        dispatch(guestsFailure());
-      } else {
-        dispatch(guestsFailure());
-      }
-    }
-  }
-};
-
-/**
- *
- *  GET ALL GUESTS
- */
-export const getTrendingGuests = (podId) => async (dispatch) => {
-  dispatch(loadGuests());
-
-  let apiUrl = `${url}/podcasts/${podId}/guests?trending=true`;
-
-  try {
-    const res = await axios.get(apiUrl);
-
-    dispatch(getAllGuestsSuccess(res.data));
-  } catch (error) {
-    if (error) {
-      if (error.response.status === 400) {
-        dispatch(guestsFailure());
-      } else {
-        dispatch(guestsFailure());
-      }
-    }
-  }
-};
-
-/**
- *
- *  GET ALL GUESTS
- */
-export const getGlobalGuests = (podId) => async (dispatch) => {
-  dispatch(loadGuests());
-
-  let apiUrl = `${url}/podcasts/${podId}/guests?all=true`;
 
   try {
     const res = await axios.get(apiUrl);
@@ -221,8 +162,6 @@ export const unVoteGuest = (userId, id, podId) => async (
   try {
     await axios.patch(apiUrl, userId, tokenConfig(getState));
 
-    // dispatch(unVoteGuestSuccess(res.data.votes));
-    // dispatch(updatePodcastsSuccess(res.data));
     window.location.replace(`/podcasts/${podId}/dash`);
   } catch (error) {
     if (error) {
@@ -239,10 +178,13 @@ export const unVoteGuest = (userId, id, podId) => async (
  *
  *  PRE FETCH GUEST
  */
-export const preFetchGuest = (twitterName) => async (dispatch, getState) => {
+export const preFetchGuest = (twitterName, podId) => async (
+  dispatch,
+  getState
+) => {
   dispatch(loadScraper());
 
-  let apiUrl = `${url}/guests/create/fetch`;
+  let apiUrl = `${url}/podcasts/${podId}/guests/create/fetch`;
 
   try {
     const res = await axios.post(apiUrl, twitterName, tokenConfig(getState));
@@ -274,9 +216,35 @@ export const createGuest = (twitterData, podId) => async (
   try {
     const res = await axios.post(apiUrl, twitterData, tokenConfig(getState));
 
-    dispatch(createGuestSuccess(res.data));
-
     window.location.replace(`/podcasts/${podId}/guests`);
+    dispatch(createGuestSuccess(res.data));
+  } catch (error) {
+    if (error) {
+      if (error.response.status === 400) {
+        dispatch(guestsFailure());
+      } else {
+        dispatch(guestsFailure());
+      }
+    }
+  }
+};
+
+/**
+ *
+ *  VOTE FOR CATEGORY
+ */
+export const categoryVote = (category, userId, podId) => async (
+  dispatch,
+  getState
+) => {
+  dispatch(loadGuests());
+
+  let apiUrl = `${url}/podcasts/${podId}/vote-category`;
+
+  try {
+    await axios.patch(apiUrl, userId, tokenConfig(getState));
+
+    window.location.replace(`/podcasts/${podId}/dash`);
   } catch (error) {
     if (error) {
       if (error.response.status === 400) {

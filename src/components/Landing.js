@@ -5,7 +5,6 @@ import Categories from "./Categories";
 import { Box, Grid } from "@chakra-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { authSelector, currentUser } from "../redux/slices/auth";
-import { getTrendingGuests, guestsSelector } from "../redux/slices/guests";
 import GlobalSpinner from "../ui/GlobalSpinner";
 import { getSinglePodcast, podcastsSelector } from "../redux/slices/podcasts";
 import { useParams } from "react-router-dom";
@@ -43,31 +42,31 @@ const categoryData = [
 const Landing = () => {
   const dispatch = useDispatch();
   const { token, isAuthenticated, user, loading } = useSelector(authSelector);
-  const { loading: guestLoading, guests } = useSelector(guestsSelector);
   const { loading: podcastLoading, singlePodcast } = useSelector(
     podcastsSelector
   );
   const { podId } = useParams();
 
   useEffect(() => {
-    dispatch(getTrendingGuests(podId));
     dispatch(getSinglePodcast(podId));
 
     isAuthenticated && dispatch(currentUser(token));
   }, [dispatch, token, isAuthenticated, podId]);
 
   if (isAuthenticated) {
-    if (loading || guestLoading || user === null) return <GlobalSpinner />;
+    if (loading || user === null) return <GlobalSpinner />;
   }
 
-  if (loading || guestLoading || podcastLoading || singlePodcast === null)
+  if (loading || podcastLoading || singlePodcast === null)
     return <GlobalSpinner />;
 
   return (
     <Layout>
       <GoBack />
-      {guests.length > 0 && <TrendingGuest guests={guests} />}
-      {guests.length === 0 && <EmptyTrending />}
+      {singlePodcast.guests.length > 0 && (
+        <TrendingGuest guests={singlePodcast.guests} />
+      )}
+      {singlePodcast.guests.length === 0 && <EmptyTrending />}
       <Grid
         templateColumns="repeat(2, 1fr)"
         templateRows="repeat(2, 1fr)"

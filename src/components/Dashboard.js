@@ -58,36 +58,17 @@ const Dashboard = () => {
   if (loading || user === null || podcastsLoader || podcasts === null)
     return <GlobalSpinner />;
 
-  // let userGuests = podcasts.filter(
-  //   (podcast) =>
-  //     podcast.guests.length > 0 &&
-  //     podcast.guests.map((p) => p.votes.includes(user._id))[0]
-  // );
-
   const userGuests = podcasts
     .map((p) =>
       p.guests.filter((u) => u.votes.includes(user._id) || u.votes.length > 0)
     )
     .filter((p) => p.length > 0);
 
-  // console.log(
-  //   podcasts.filter(
-  //     (podcast) =>
-  //       podcast.guests.length > 0 &&
-  //       podcast.guests.map((p) => p.votes.includes(user._id))
-  //   )
-  // );
-  // console.log(
-  //   podcasts.map((p) =>
-  //     p.guests.filter((u) => u.votes.includes(user._id) || u.votes.length > 0)
-  //   )
-  // );
-
   if (userGuests.length === 0) return <EmptyDashboard />;
 
   return (
     <Layout>
-      <GoBack />
+      <GoBack path={`/podcasts/${podId}`} />
 
       <Header>
         <h2>
@@ -126,8 +107,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-// .filter(
-//   (podcast) =>
-//     podcast.guests.length > 0 &&
-//     podcast.guests.map((p) => p.votes.includes(user._id))[0]
-// )
