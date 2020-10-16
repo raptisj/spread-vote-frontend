@@ -5,8 +5,6 @@ export const isEmpty = (value) =>
   (typeof value === "object" && Object.keys(value).length === 0) ||
   (typeof value === "string" && value.trim().length === 0);
 
-// export default isEmpty;
-
 export const sortElements = (data, order = "desc") => {
   let po = data;
   return po

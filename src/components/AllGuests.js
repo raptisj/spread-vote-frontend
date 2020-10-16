@@ -3,7 +3,6 @@ import { Box, Grid, Input, FormHelperText } from "@chakra-ui/core";
 import { Link, useParams } from "react-router-dom";
 import LinkButton from "../ui/LinkButton";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllGuests, guestsSelector } from "../redux/slices/guests";
 import { authSelector, currentUser } from "../redux/slices/auth";
 import GlobalSpinner from "../ui/GlobalSpinner";
 import FullWidthCard from "../ui/FullWidthCard";
@@ -12,6 +11,7 @@ import Layout from "../screens/Layout";
 import styled from "@emotion/styled";
 import Fuse from "fuse.js";
 import { sortElements } from "../utils/helperFunctions";
+import { getSinglePodcast, podcastsSelector } from "../redux/slices/podcasts";
 
 const MainInput = styled(Input)`
   border: 1px solid #e6e6e6;
@@ -35,27 +35,29 @@ const fuseOptions = {
 
 const AllGuest = () => {
   const dispatch = useDispatch();
-  const { guests, loading } = useSelector(guestsSelector);
   const { isAuthenticated, user } = useSelector(authSelector);
+  const { singlePodcast, loading } = useSelector(podcastsSelector);
   const [query, setQuery] = useState("");
   const { podId } = useParams();
 
   useEffect(() => {
-    dispatch(getAllGuests(podId));
+    dispatch(getSinglePodcast(podId));
 
     if (isAuthenticated) {
       dispatch(currentUser());
     }
   }, [dispatch, isAuthenticated, podId]);
 
-  if (loading) return <GlobalSpinner />;
+  if (loading || singlePodcast === null) return <GlobalSpinner />;
 
   const onChange = (e) => {
     setQuery(e.target.value);
   };
 
-  const fuse = new Fuse(guests, fuseOptions);
-  const searchResults = query ? fuse.search(query).map((p) => p.item) : guests;
+  const fuse = new Fuse(singlePodcast.guests, fuseOptions);
+  const searchResults = query
+    ? fuse.search(query).map((p) => p.item)
+    : singlePodcast.guests;
 
   return (
     <Layout>
@@ -92,7 +94,7 @@ const AllGuest = () => {
       </Grid>
 
       <Grid templateColumns="repeat(1, 1fr)" gap="16px" mt="32px">
-        {guests.length > 0 &&
+        {singlePodcast.guests.length > 0 &&
           sortElements([...searchResults]).map((card, i) => (
             <Link to={`/podcasts/${podId}/guests/${card._id}`} key={i}>
               <FullWidthCard

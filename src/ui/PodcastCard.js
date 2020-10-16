@@ -74,7 +74,6 @@ const Card = styled(Box)`
   }
 
   p {
-    ${"" /* margin-left: 20px; */}
     font-size: 16px;
     font-weight: 500;
     display: flex;

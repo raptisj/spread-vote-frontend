@@ -198,6 +198,10 @@ export const updateGuests = (votesData) => async (dispatch, getState) => {
   }
 };
 
+/**
+ *
+ *  REMOVE GUEST FROM USER
+ */
 export const removeGuestsFromUser = (votesData) => async (
   dispatch,
   getState

@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { tokenConfig, updateGuests, removeGuestsFromUser } from "./auth";
+import { updatePodcastsSuccess } from "./podcasts";
 import { updatePodcast } from "./podcasts";
 
 let url = "http://localhost:4000";
@@ -92,11 +93,11 @@ export const getAllGuests = (podId) => async (dispatch, getState) => {
 
   try {
     const res = await axios.get(apiUrl);
-    let po = res.data.map((p) => p.votes);
-    let so = [].concat(...po);
+    // let po = res.data.map((p) => p.votes);
+    // let so = [].concat(...po);
     // console.log();
     dispatch(getAllGuestsSuccess(res.data));
-    dispatch(updatePodcast(podId, so));
+    // dispatch(updatePodcast(podId, so));
   } catch (error) {
     if (error) {
       if (error.response.status === 400) {
@@ -134,12 +135,36 @@ export const getTrendingGuests = (podId) => async (dispatch) => {
 
 /**
  *
- *  GET SINGLE GUESTS
+ *  GET ALL GUESTS
  */
-export const getSingleGuest = (id) => async (dispatch) => {
+export const getGlobalGuests = (podId) => async (dispatch) => {
   dispatch(loadGuests());
 
-  let apiUrl = `${url}/guests/${id}`;
+  let apiUrl = `${url}/podcasts/${podId}/guests?all=true`;
+
+  try {
+    const res = await axios.get(apiUrl);
+
+    dispatch(getAllGuestsSuccess(res.data));
+  } catch (error) {
+    if (error) {
+      if (error.response.status === 400) {
+        dispatch(guestsFailure());
+      } else {
+        dispatch(guestsFailure());
+      }
+    }
+  }
+};
+
+/**
+ *
+ *  GET SINGLE GUESTS
+ */
+export const getSingleGuest = (podId, id) => async (dispatch) => {
+  dispatch(loadGuests());
+
+  let apiUrl = `${url}/podcasts/${podId}/guests/${id}`;
 
   try {
     const res = await axios.get(apiUrl);
@@ -167,9 +192,9 @@ export const upVoteGuest = (userId, id) => async (dispatch, getState) => {
 
   try {
     const res = await axios.patch(apiUrl, userId, tokenConfig(getState));
+    let guestVotes = res.data.guests.filter((p) => p._id === id)[0].votes;
 
-    dispatch(voteGuestSuccess(res.data.votes));
-    dispatch(updateGuests(res.data));
+    dispatch(voteGuestSuccess(guestVotes));
   } catch (error) {
     if (error) {
       if (error.response.status === 400) {
@@ -185,16 +210,20 @@ export const upVoteGuest = (userId, id) => async (dispatch, getState) => {
  *
  *  UN VOTE GUESTS
  */
-export const unVoteGuest = (userId, id) => async (dispatch, getState) => {
+export const unVoteGuest = (userId, id, podId) => async (
+  dispatch,
+  getState
+) => {
   dispatch(loadGuests());
 
   let apiUrl = `${url}/guests/un-vote/${id}`;
 
   try {
-    const res = await axios.patch(apiUrl, userId, tokenConfig(getState));
+    await axios.patch(apiUrl, userId, tokenConfig(getState));
 
-    dispatch(unVoteGuestSuccess(res.data.votes));
-    dispatch(removeGuestsFromUser(res.data));
+    // dispatch(unVoteGuestSuccess(res.data.votes));
+    // dispatch(updatePodcastsSuccess(res.data));
+    window.location.replace(`/podcasts/${podId}/dash`);
   } catch (error) {
     if (error) {
       if (error.response.status === 400) {
@@ -246,7 +275,7 @@ export const createGuest = (twitterData, podId) => async (
     const res = await axios.post(apiUrl, twitterData, tokenConfig(getState));
 
     dispatch(createGuestSuccess(res.data));
-    dispatch(updateGuests(res.data));
+
     window.location.replace(`/podcasts/${podId}/guests`);
   } catch (error) {
     if (error) {

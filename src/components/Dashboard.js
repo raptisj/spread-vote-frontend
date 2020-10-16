@@ -13,6 +13,8 @@ import GoBack from "../ui/GoBack";
 import GlobalSpinner from "../ui/GlobalSpinner";
 import EmptyDashboard from "../screens/EmptyDashboard";
 import Layout from "../screens/Layout";
+import { useParams } from "react-router-dom";
+import { getAllPodcasts, podcastsSelector } from "../redux/slices/podcasts";
 
 const Header = styled.header`
   h2 {
@@ -36,22 +38,52 @@ const Rows = styled.div`
 const Dashboard = () => {
   const dispatch = useDispatch();
   const { user, loading } = useSelector(authSelector);
+  const { podcasts, loading: podcastsLoader } = useSelector(podcastsSelector);
+  const { podId } = useParams();
 
   useEffect(() => {
+    dispatch(getAllPodcasts());
     dispatch(currentUser());
-  }, [dispatch]);
+  }, [dispatch, podId]);
 
-  const handleUnVote = (guestId) => {
+  const handleUnVote = (guestId, podcastId) => {
     let userData = {
       votes: [user._id],
+      podcastId,
     };
 
-    dispatch(unVoteGuest(userData, guestId));
+    dispatch(unVoteGuest(userData, guestId, podId));
   };
 
-  if (loading || user === null) return <GlobalSpinner />;
-  if (user.guests.length === 0) return <EmptyDashboard />;
-  const podcastNames = user.guests.map((p) => p);
+  if (loading || user === null || podcastsLoader || podcasts === null)
+    return <GlobalSpinner />;
+
+  // let userGuests = podcasts.filter(
+  //   (podcast) =>
+  //     podcast.guests.length > 0 &&
+  //     podcast.guests.map((p) => p.votes.includes(user._id))[0]
+  // );
+
+  const userGuests = podcasts
+    .map((p) =>
+      p.guests.filter((u) => u.votes.includes(user._id) || u.votes.length > 0)
+    )
+    .filter((p) => p.length > 0);
+
+  // console.log(
+  //   podcasts.filter(
+  //     (podcast) =>
+  //       podcast.guests.length > 0 &&
+  //       podcast.guests.map((p) => p.votes.includes(user._id))
+  //   )
+  // );
+  // console.log(
+  //   podcasts.map((p) =>
+  //     p.guests.filter((u) => u.votes.includes(user._id) || u.votes.length > 0)
+  //   )
+  // );
+
+  if (userGuests.length === 0) return <EmptyDashboard />;
 
   return (
     <Layout>
@@ -64,27 +96,38 @@ const Dashboard = () => {
         <p>List of all the guests you have voted.</p>
       </Header>
 
-      {user.guests.length > 0 &&
-        podcastNames.map((podcast, i) => (
-          <Rows key={i}>
-            <h3>{podcast.podcast_name}</h3>
-
-            <Grid templateColumns="repeat(3, 1fr)" gap="16px" mt="32px">
-              {user.guests
-                .filter((guest) => guest.podcast_id === podcast.podcast_id)
-                .map((guest, i) => (
-                  <DashboardCard
-                    key={i}
-                    guest={guest}
-                    loading={loading}
-                    handleUnVote={handleUnVote}
-                  />
-                ))}
-            </Grid>
-          </Rows>
-        ))}
+      {podcasts.length > 0 &&
+        podcasts
+          .filter(
+            (podcast) =>
+              podcast.guests.length > 0 &&
+              podcast.guests.map((p) => p.votes.includes(user._id))
+          )
+          .map((podcast, i) => (
+            <Rows key={i}>
+              <h3>{podcast.name}</h3>
+              <Grid templateColumns="repeat(3, 1fr)" gap="16px" mt="32px">
+                {podcast.guests.length > 0 &&
+                  podcast.guests
+                    .filter((p) => p.votes.includes(user._id))
+                    .map((guest, i) => (
+                      <DashboardCard
+                        key={i}
+                        guest={guest}
+                        loading={loading}
+                        handleUnVote={handleUnVote}
+                      />
+                    ))}
+              </Grid>
+            </Rows>
+          ))}
     </Layout>
   );
 };
 
 export default Dashboard;
+// .filter(
+//   (podcast) =>
+//     podcast.guests.length > 0 &&
+//     podcast.guests.map((p) => p.votes.includes(user._id))[0]
+// )

@@ -25,6 +25,8 @@ import { authSelector } from "../redux/slices/auth";
 import FullWidthCard from "../ui/FullWidthCard";
 import SmallSpinner from "../ui/SmallSpinner";
 import { getSinglePodcast, podcastsSelector } from "../redux/slices/podcasts";
+import Warning from "../icons/Warning";
+import theme from "../theme";
 
 const Divider = styled.div`
   height: 1px;
@@ -35,6 +37,12 @@ const Divider = styled.div`
 
 const MainInput = styled(Input)`
   border: 1px solid #e6e6e6;
+`;
+
+const WarningMessage = styled.span`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
 `;
 
 const ImageBox = styled.div`
@@ -82,6 +90,10 @@ const Body = styled.div`
 // @jdnoc
 
 //  @anthilemoon
+
+// @banditaras
+
+// @JohnRaptisM
 const AddGuest = () => {
   const dispatch = useDispatch();
   const { twitterData, loading, scrapeLoader } = useSelector(guestsSelector);
@@ -90,6 +102,7 @@ const AddGuest = () => {
   const [inputValue, setInputValue] = useState("");
   const { podId } = useParams();
 
+  console.log(twitterData);
   useEffect(() => {
     dispatch(getAllGuests(podId));
     dispatch(getSinglePodcast(podId));
@@ -129,6 +142,7 @@ const AddGuest = () => {
       podcast_id: podId,
       podcast_name: singlePodcast.name,
       votes: [user._id],
+      podcasts: [{ podcast_id: podId, podcast_name: singlePodcast.name }],
     };
 
     dispatch(createGuest(data, podId));
@@ -156,30 +170,43 @@ const AddGuest = () => {
             value={inputValue}
           />
           <FormHelperText id="guest-name">
-            Paste guest's Twitter name. Typing won't work.
+            <WarningMessage>
+              <Warning
+                stroke={theme.colors.red.customRed}
+                width={20}
+                height={20}
+              />
+              Paste guest's Twitter name. Typing won't work.
+            </WarningMessage>
+            <WarningMessage>
+              <Warning
+                stroke={theme.colors.red.customRed}
+                width={20}
+                height={20}
+              />
+              Guest should have at least 5 votes in order to be visible.
+            </WarningMessage>
           </FormHelperText>
 
           <Body>
             <div>
-              {twitterData !== null &&
-                !isEmpty(twitterData) &&
-                !twitterData._id && (
-                  <ImageBox>
-                    <Image
-                      rounded="9999px"
-                      size="150px"
-                      src={twitterData.twitterImage}
-                      alt={twitterData.name}
-                      display="block"
-                      p="16px"
-                      objectFit="cover"
-                    />
-                    <h3>{twitterData.name}</h3>
-                    <span>{twitterData.twitterName}</span>
-                    <p>{twitterData.bio}</p>
-                  </ImageBox>
-                )}
-
+              {twitterData !== null && !isEmpty(twitterData) && (
+                <ImageBox>
+                  <Image
+                    rounded="9999px"
+                    size="150px"
+                    src={twitterData.twitterImage}
+                    alt={twitterData.name}
+                    display="block"
+                    p="16px"
+                    objectFit="cover"
+                  />
+                  <h3>{twitterData.name}</h3>
+                  <span>{twitterData.twitterName}</span>
+                  <p>{twitterData.bio}</p>
+                </ImageBox>
+              )}
+              {/* 
               {twitterData !== null && twitterData._id && (
                 <React.Fragment>
                   <GuestExistsMsg>
@@ -197,7 +224,7 @@ const AddGuest = () => {
                     />
                   </Link>
                 </React.Fragment>
-              )}
+              )} */}
 
               {isEmpty(twitterData) && twitterData !== null && (
                 <div>Could not find guest</div>
@@ -216,10 +243,7 @@ const AddGuest = () => {
             <CustomButton
               appearance="primary"
               type="submit"
-              disabled={
-                isEmpty(twitterData) ||
-                (twitterData !== null && twitterData._id)
-              }
+              disabled={isEmpty(twitterData) || twitterData === null}
               isLoading={loading}
             >
               Submit

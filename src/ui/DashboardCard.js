@@ -78,7 +78,7 @@ const ButtonBox = styled(Box)`
 
 const DashboardCard = ({ guest, handleUnVote, loading }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { name, twitterName, twitterImage, votes, _id } = guest;
+  const { name, twitterName, twitterImage, votes, _id, podcast_id } = guest;
   const { podId } = useParams();
 
   return (
@@ -120,6 +120,7 @@ const DashboardCard = ({ guest, handleUnVote, loading }) => {
         id={_id}
         isOpen={isOpen}
         onClose={onClose}
+        podcastId={podcast_id}
       />
     </Card>
   );

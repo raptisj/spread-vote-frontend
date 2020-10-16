@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { tokenConfig, updateGuests, removeGuestsFromUser } from "./auth";
+import { tokenConfig } from "./auth";
 
 let url = "http://localhost:4000";
 
@@ -34,6 +34,7 @@ const podcastsSlice = createSlice({
 
     updatePodcastsSuccess: (state, { payload }) => {
       state.loading = false;
+      state.podcasts = payload;
     },
 
     podcastsFailure: (state) => {

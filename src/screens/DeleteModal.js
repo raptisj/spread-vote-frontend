@@ -23,7 +23,14 @@ const StyledModalHeader = styled.span`
   font-size: 30px;
 `;
 
-const DeleteModal = ({ handleUnVote, name, id, isOpen, onClose }) => {
+const DeleteModal = ({
+  handleUnVote,
+  name,
+  id,
+  isOpen,
+  onClose,
+  podcastId,
+}) => {
   return (
     <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -42,7 +49,7 @@ const DeleteModal = ({ handleUnVote, name, id, isOpen, onClose }) => {
           <CustomButton
             appearance="secondary"
             margin="0 0 0 24px"
-            onClick={() => handleUnVote(id)}
+            onClick={() => handleUnVote(id, podcastId)}
           >
             Yes, delete guest
           </CustomButton>

@@ -43,7 +43,7 @@ const Podcasts = () => {
   return (
     <Layout>
       <Header>
-        <h2>Spread Vote help podcasters connect with their audience.</h2>
+        <h2>Spread Vote help podcaster's connect with their audience.</h2>
         <p>List of all the guests you have voted.</p>
       </Header>
       <Grid

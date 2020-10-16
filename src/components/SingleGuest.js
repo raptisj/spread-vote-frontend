@@ -90,21 +90,22 @@ const Votes = styled.div`
   }
 `;
 
-const SingleGuest = (props) => {
+const SingleGuest = () => {
   const dispatch = useDispatch();
   const { singleGuest, loading } = useSelector(guestsSelector);
   const { isAuthenticated, user } = useSelector(authSelector);
   const { podId, id } = useParams();
 
   useEffect(() => {
-    dispatch(getSingleGuest(id));
-    dispatch(getSinglePodcast(podId));
+    // dispatch(getSinglePodcast(podId));
+    dispatch(getSingleGuest(podId, id));
 
     if (isAuthenticated) {
       dispatch(currentUser());
     }
   }, [dispatch, id, podId, isAuthenticated]);
 
+  // console.log(singleGuest);
   if (loading || singleGuest === null) return <GlobalSpinner />;
 
   const { name, twitterName, twitterImage, votes, bio } = singleGuest;
@@ -112,6 +113,7 @@ const SingleGuest = (props) => {
   const handleVote = () => {
     let userData = {
       votes: [user._id],
+      podcastId: podId,
     };
 
     dispatch(upVoteGuest(userData, singleGuest._id));
