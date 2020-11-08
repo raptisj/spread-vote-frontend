@@ -67,6 +67,10 @@ const authSlice = createSlice({
       state.hasErrors = true;
       state.errors = payload;
     },
+
+    resetErrors: (state) => {
+      state.errors = ''
+    }
   },
 });
 
@@ -79,6 +83,7 @@ export const {
   updateGuestsSuccess,
   removeGuestsSuccess,
   reportFailure,
+  resetErrors
 } = authSlice.actions;
 
 export const authSelector = (state) => state.auth;
@@ -102,7 +107,7 @@ export const signUp = (userData) => async (dispatch) => {
   } catch (error) {
     if (error) {
       if (error.response.status === 400) {
-        dispatch(reportFailure());
+        dispatch(reportFailure(error.response.data));
       } else {
         dispatch(reportFailure());
         window.location.replace("/add-guest");
@@ -131,7 +136,6 @@ export const login = (userData) => async (dispatch) => {
       if (error.response.status === 400) {
         dispatch(reportFailure(error.response.data));
       } else {
-        console.log("fuckkkk");
         dispatch(reportFailure());
         window.location.replace("/add-guest");
       }

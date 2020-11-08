@@ -8,7 +8,7 @@ import PasswordInput from "../ui/PasswordInput";
 const Card = styled(Box)`
   background: #fff;
   margin-top: 8rem;
-  padding: 32px;
+  padding: 2rem;
   border-radius: 4px;
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.15);
 
@@ -24,13 +24,14 @@ const Card = styled(Box)`
   }
 
   input {
-    margin-bottom: 16px;
+    margin-bottom: 1rem;
     border: 1px solid #e6e6e6;
   }
 
-  p {
+  button + p {
     color: ${(props) => props.theme.colors.black.soft};
     font-size: 14px;
+    margin-top: 1rem;
 
     a {
       color: ${(props) => props.theme.colors.green.brand};
@@ -52,12 +53,6 @@ const LoginForm = ({
   isEmptyField,
   loading,
 }) => {
-  // if (errors !== null) {
-  // const { email = null, password = null } = errors;
-  // }
-  // console.log(errors);
-
-  // console.log(errors.password);
   return (
     <Card>
       <h2>Log In</h2>
@@ -72,19 +67,16 @@ const LoginForm = ({
             boxSizing="border-box"
             onChange={(e) => getEmail(e.target.value)}
           />
-          <ErrorMessage>{errors !== null ? errors.email : ""}</ErrorMessage>
+          <ErrorMessage>{errors && errors.errors.email !== "" && errors.errors.email}</ErrorMessage>
 
           <FormLabel htmlFor="password">PASSWORD</FormLabel>
 
           <PasswordInput onChange={(e) => getPassword(e.target.value)} />
           <ErrorMessage>
-            {errors && errors.password !== "" && errors.password}
+            {errors && errors.errors.password !== "" && errors.errors.password}
           </ErrorMessage>
         </FormControl>
 
-        <p>
-          Don't have an account yet? <Link to="/auth/signup">Sign Up</Link>
-        </p>
         <CustomButton
           appearance="primary"
           type="submit"
@@ -95,6 +87,10 @@ const LoginForm = ({
         >
           Submit
         </CustomButton>
+
+        <p>
+          Don't have an account yet? <Link to="/auth/signup">Sign Up</Link>
+        </p>
       </form>
     </Card>
   );

@@ -5,17 +5,18 @@ import styled from "@emotion/styled";
 
 // redux
 import { authSelector, currentUser } from "../redux/slices/auth";
-import { getAllPodcasts, podcastsSelector } from "../redux/slices/podcasts";
+import { getAllPodcasts, selectAllPodcasts } from "../redux/slices/podcasts";
 
 // ui
 import GlobalSpinner from "../ui/GlobalSpinner";
 import PodcastCard from "../ui/PodcastCard";
 import Layout from "../screens/Layout";
 import { Link } from "react-router-dom";
+// import { isEmpty } from "../utils/helperFunctions";
 
 const Header = styled.header`
   h2 {
-    color: ${(props) => props.theme.colors.black.dark};
+      color: ${(props) => props.theme.colors.black.dark};
   }
 
   p {
@@ -26,19 +27,21 @@ const Header = styled.header`
 const Podcasts = () => {
   const dispatch = useDispatch();
   const { token, isAuthenticated, user, loading } = useSelector(authSelector);
-  const { loading: podcastsLoading, podcasts } = useSelector(podcastsSelector);
-
+  const podcasts = useSelector(selectAllPodcasts);
+  const podcastsLoading = useSelector(state => state.podcasts.loading);
+  
   useEffect(() => {
     dispatch(getAllPodcasts());
     if (isAuthenticated) {
       dispatch(currentUser(token));
     }
   }, [dispatch, token, isAuthenticated]);
-
+  
   if (isAuthenticated) {
     if (loading || podcastsLoading || user === null) return <GlobalSpinner />;
   }
-  if (loading || podcastsLoading || podcasts === null) return <GlobalSpinner />;
+  if (loading || podcastsLoading || podcasts.length === 0) return <GlobalSpinner />;
+  
 
   return (
     <Layout>

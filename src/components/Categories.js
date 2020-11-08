@@ -34,6 +34,8 @@ const CategoryLink = styled(Link)`
 const Categories = ({ categoryData }) => {
   const { podId } = useParams();
 
+  const renderColors = () => categoryData.every(p => p.color !== undefined) ? categoryData.map(p => p.color) : { scheme: 'nivo' }
+
   return (
     <Box height="440px" p="32px">
       <CategoryHead>
@@ -49,7 +51,7 @@ const Categories = ({ categoryData }) => {
         innerRadius={0.5}
         padAngle={0.7}
         cornerRadius={3}
-        colors={{ scheme: "nivo" }}
+        colors={renderColors()}
         borderWidth={1}
         borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
         enableRadialLabels={false}

@@ -81,7 +81,7 @@ const Card = styled(Box)`
   }
 `;
 const PodcastCard = ({ podcast }) => {
-  const { name, _id, votes } = podcast;
+  const { name, guests } = podcast;
 
   return (
     <Card>
@@ -103,7 +103,7 @@ const PodcastCard = ({ podcast }) => {
         <div>
           <h3>{name}</h3>
           <p>
-            Votes: <span>{votes}</span>
+            Guests: <span>{guests.length}</span>
           </p>
         </div>
       </Box>

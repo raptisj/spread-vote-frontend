@@ -24,7 +24,7 @@ import GlobalSpinner from "../ui/GlobalSpinner";
 import { authSelector } from "../redux/slices/auth";
 import FullWidthCard from "../ui/FullWidthCard";
 import SmallSpinner from "../ui/SmallSpinner";
-import { getSinglePodcast, podcastsSelector } from "../redux/slices/podcasts";
+import { getSinglePodcast, selectPodcastById } from "../redux/slices/podcasts";
 import Warning from "../icons/Warning";
 import theme from "../theme";
 
@@ -96,11 +96,11 @@ const Body = styled.div`
 // @JohnRaptisM
 const AddGuest = () => {
   const dispatch = useDispatch();
+  const { podId } = useParams();
   const { twitterData, loading, scrapeLoader } = useSelector(guestsSelector);
   const { isAuthenticated, user } = useSelector(authSelector);
-  const { singlePodcast } = useSelector(podcastsSelector);
+  const singlePodcast = useSelector((state) => selectPodcastById(state, podId))
   const [inputValue, setInputValue] = useState("");
-  const { podId } = useParams();
 
   useEffect(() => {
     dispatch(getAllGuests(podId));

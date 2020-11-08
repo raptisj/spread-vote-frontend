@@ -11,7 +11,7 @@ import Layout from "../screens/Layout";
 import styled from "@emotion/styled";
 import Fuse from "fuse.js";
 import { sortElements } from "../utils/helperFunctions";
-import { getSinglePodcast, podcastsSelector } from "../redux/slices/podcasts";
+import { getSinglePodcast, selectPodcastById } from "../redux/slices/podcasts";
 
 const MainInput = styled(Input)`
   border: 1px solid #e6e6e6;
@@ -35,10 +35,12 @@ const fuseOptions = {
 
 const AllGuest = () => {
   const dispatch = useDispatch();
-  const { isAuthenticated, user } = useSelector(authSelector);
-  const { singlePodcast, loading } = useSelector(podcastsSelector);
-  const [query, setQuery] = useState("");
   const { podId } = useParams();
+
+  const { isAuthenticated, user } = useSelector(authSelector);
+  const singlePodcast = useSelector((state) => selectPodcastById(state, podId))
+  const loading = useSelector(state => state.podcasts.loading)
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     dispatch(getSinglePodcast(podId));
@@ -48,7 +50,7 @@ const AllGuest = () => {
     }
   }, [dispatch, isAuthenticated, podId]);
 
-  if (loading || singlePodcast === null) return <GlobalSpinner />;
+  if (loading || singlePodcast === undefined) return <GlobalSpinner />;
 
   const onChange = (e) => {
     setQuery(e.target.value);

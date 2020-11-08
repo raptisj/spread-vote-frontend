@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import { useDispatch } from "react-redux";
 import { authSelector, logout } from "../redux/slices/auth";
 import { useSelector } from "react-redux";
-import { podcastsSelector } from "../redux/slices/podcasts";
+import { selectPodcastById } from "../redux/slices/podcasts";
 
 const Nav = styled.nav`
   display: flex;
@@ -89,12 +89,10 @@ const PodcastLink = styled(Link)`
 
 const Navigation = () => {
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector(authSelector);
-  const { singlePodcast } = useSelector(podcastsSelector);
   const { pathname } = useLocation();
-
-  // grab podcast id from url
   const podId = pathname.split("/")[2];
+  const { isAuthenticated } = useSelector(authSelector);
+  const singlePodcast = useSelector((state) => selectPodcastById(state, podId))
 
   return (
     <Nav>
@@ -103,26 +101,18 @@ const Navigation = () => {
         <span>Vote</span>
       </LogoLink>
       <Box display="flex" justifyContent="end" alignItems="center">
-        {singlePodcast !== null && (
+        {singlePodcast !== undefined && (
           <PodcastLink to={`/podcasts/${podId}/`}>
             {singlePodcast.name}
           </PodcastLink>
         )}
         {isAuthenticated ? (
           <React.Fragment>
-            {pathname !== "/" ? (
-              <Link to={`/`}>Podcasts</Link>
-            ) : (
-              <NavLink to={`/`}>Podcasts</NavLink>
-            )}
+            {pathname !== "/" ? <Link to={`/`}>Podcasts</Link> : <NavLink to={`/`}>Podcasts</NavLink>}
 
-            {pathname !== "/" && (
-              <NavLink to={`/podcasts/${podId}/dash/`}>Dashboard</NavLink>
-            )}
+            {pathname !== "/" && <NavLink to={`/podcasts/${podId}/dash/`}>Dashboard</NavLink>}
 
-            {pathname !== "/" && (
-              <NavLink to={`/podcasts/${podId}/guests/`}>Guests</NavLink>
-            )}
+            {pathname !== "/" && <NavLink to={`/podcasts/${podId}/guests/`}>Guests</NavLink>}
 
             <a href="#0" onClick={() => dispatch(logout())}>
               Log out
@@ -130,18 +120,14 @@ const Navigation = () => {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            {pathname !== "/" ? (
-              <Link to={`/`}>Podcasts</Link>
-            ) : (
-              <NavLink to={`/`}>Podcasts</NavLink>
-            )}
+            {pathname !== "/" ? <Link to={`/`}>Podcasts</Link> : <NavLink to={`/`}>Podcasts</NavLink>}
 
-            {pathname !== "/" && (
+            {!['/', '/auth/login/', '/auth/signup/'].includes(pathname) && (
               <NavLink to={`/podcasts/${podId}/guests/`}>Guests</NavLink>
             )}
 
-            <NavLink to="/auth/login">Log in</NavLink>
-            <NavLink to="/auth/signup">Sign up</NavLink>
+            <NavLink to="/auth/login/">Log in</NavLink>
+            <NavLink to="/auth/signup/">Sign up</NavLink>
           </React.Fragment>
         )}
       </Box>

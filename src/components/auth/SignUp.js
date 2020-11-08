@@ -3,9 +3,10 @@ import { Box, Grid } from "@chakra-ui/core";
 import SignUpForm from "../../ui/SignUpForm";
 import { useDispatch, useSelector } from "react-redux";
 import { signUp, authSelector } from "../../redux/slices/auth";
+import Layout from "../../screens/Layout";
 
-const SignUp = (props) => {
-  const { hasErrors, loading } = useSelector(authSelector);
+const SignUp = () => {
+  const { errors, loading } = useSelector(authSelector);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -25,30 +26,29 @@ const SignUp = (props) => {
   };
 
   return (
-    <Grid templateColumns="repeat(3, 1fr)" gap="16px">
-      {/* <Box /> */}
+    <Layout>
+      <Grid templateColumns="repeat(3, 1fr)" gap="16px">
 
-      <Box
-        minHeight="84vh"
-        maxWidth="475px"
-        minWidth="475px"
-        m="0 auto"
-        gridColumn="2 / 3"
-      >
-        <SignUpForm
-          handleSubmit={handleSubmit}
-          getFirstName={setFirstName}
-          getLastName={setLastName}
-          getEmail={setEmail}
-          getPassword={setPassword}
-          hasErrors={hasErrors}
-          isEmptyField={isEmptyField}
-          loading={loading}
-        />
-      </Box>
+        <Box  
+          maxWidth="475px"
+          minWidth="475px"
+          m="0 auto"
+          gridColumn="2 / 3"
+        >
+          <SignUpForm
+            handleSubmit={handleSubmit}
+            getFirstName={setFirstName}
+            getLastName={setLastName}
+            getEmail={setEmail}
+            getPassword={setPassword}
+            isEmptyField={isEmptyField}
+            loading={loading}
+            errors={errors}
+          />
+        </Box>
 
-      {/* <Box /> */}
-    </Grid>
+      </Grid>
+    </Layout>
   );
 };
 

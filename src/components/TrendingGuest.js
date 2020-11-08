@@ -5,6 +5,7 @@ import TrendingCard from "../ui/TrendingCard";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
 import { authSelector } from "../redux/slices/auth";
+import { selectPodcastById } from "../redux/slices/podcasts";
 
 const StyledLink = styled(Link)`
   color: ${(props) => props.theme.colors.green.brand};
@@ -22,11 +23,16 @@ const Header = styled.header`
   p {
     color: ${(props) => props.theme.colors.black.soft};
   }
+
+  p span {
+    color: ${(props) => props.theme.colors.green.hover};
+  }
 `;
 
 const TrendingGuest = ({ guests }) => {
   const { user } = useSelector(authSelector);
   const { podId } = useParams();
+  const singlePodcast = useSelector((state) => selectPodcastById(state, podId))
 
   return (
     <Box>
@@ -38,7 +44,7 @@ const TrendingGuest = ({ guests }) => {
       >
         <Header>
           <h2>Trending Guests</h2>
-          <p>Here are the most popular guests voted.</p>
+          <p>Here are the most popular guests voted for <span>{singlePodcast.name}</span></p>
         </Header>
 
         <StyledLink to={`/podcasts/${podId}/guests`}>View all</StyledLink>

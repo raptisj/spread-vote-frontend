@@ -229,29 +229,29 @@ export const createGuest = (twitterData, podId) => async (
   }
 };
 
-/**
- *
- *  VOTE FOR CATEGORY
- */
-export const categoryVote = (category, userId, podId) => async (
-  dispatch,
-  getState
-) => {
-  dispatch(loadGuests());
+// /**
+//  *
+//  *  VOTE FOR CATEGORY
+//  */
+// export const categoryVote = (category, userId, podId) => async (
+//   dispatch,
+//   getState
+// ) => {
+//   dispatch(loadGuests());
 
-  let apiUrl = `${url}/podcasts/${podId}/vote-category`;
+//   let apiUrl = `${url}/podcasts/${podId}/vote-category`;
 
-  try {
-    await axios.patch(apiUrl, userId, tokenConfig(getState));
+//   try {
+//     await axios.patch(apiUrl, userId, tokenConfig(getState));
 
-    window.location.replace(`/podcasts/${podId}/dash`);
-  } catch (error) {
-    if (error) {
-      if (error.response.status === 400) {
-        dispatch(guestsFailure());
-      } else {
-        dispatch(guestsFailure());
-      }
-    }
-  }
-};
+//     window.location.replace(`/podcasts/${podId}/`);
+//   } catch (error) {
+//     if (error) {
+//       if (error.response.status === 400) {
+//         dispatch(guestsFailure());
+//       } else {
+//         dispatch(guestsFailure());
+//       }
+//     }
+//   }
+// };

@@ -35,7 +35,7 @@ const Card = styled(Box)`
     border: 1px solid #e6e6e6;
   }
 
-  p {
+ button + p {
     margin-top: 16px;
     color: ${(props) => props.theme.colors.black.soft};
     font-size: 14px;
@@ -44,11 +44,6 @@ const Card = styled(Box)`
       color: ${(props) => props.theme.colors.green.brand};
     }
   }
-  ${"" /* 
-  p {
-    color: ${(props) => props.theme.colors.red.customRed};
-    text-align: center;
-  } */}
 `;
 
 const Terms = styled.div`
@@ -56,7 +51,15 @@ const Terms = styled.div`
 
   p {
     margin: 0 0 0 8px;
+    color: ${(props) => props.theme.colors.black.soft};
+    font-size: 14px;
   }
+`;
+
+const ErrorMessage = styled.p`
+  margin-bottom: 12px;
+  color: ${(props) => props.theme.colors.red.customRed};
+  font-size: 14px;
 `;
 
 const SignUpForm = ({
@@ -65,9 +68,9 @@ const SignUpForm = ({
   getLastName,
   getEmail,
   getPassword,
-  hasErrors,
   isEmptyField,
   loading,
+  errors
 }) => {
   return (
     <Card>
@@ -111,7 +114,9 @@ const SignUpForm = ({
           <PasswordInput onChange={(e) => getPassword(e.target.value)} />
         </FormControl>
 
-        {hasErrors && <p>Email is already register.</p>}
+         <ErrorMessage>
+            {errors && errors.errors.email !== "" && errors.errors.email}
+          </ErrorMessage>
 
         <Terms>
           <Checkbox variantColor="green" defaultIsChecked></Checkbox>

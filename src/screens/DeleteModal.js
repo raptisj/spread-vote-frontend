@@ -51,7 +51,7 @@ const DeleteModal = ({
             margin="0 0 0 24px"
             onClick={() => handleUnVote(id, podcastId)}
           >
-            Yes, delete guest
+            Yes, revert my vote
           </CustomButton>
         </ModalFooter>
       </ModalContent>

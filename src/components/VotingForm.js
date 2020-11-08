@@ -7,17 +7,16 @@ import {
   FormHelperText,
   RadioButtonGroup,
 } from "@chakra-ui/core";
+import { useParams } from "react-router-dom";
 import Fuse from "fuse.js";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getAllGuests,
-  guestsSelector,
-  categoryVote,
-} from "../redux/slices/guests";
 import { authSelector, currentUser } from "../redux/slices/auth";
+import { selectPodcastById, getSinglePodcast, categoryVote } from '../redux/slices/podcasts'
 import styled from "@emotion/styled";
 import CustomButton from "../ui/Button";
-import { useParams } from "react-router-dom";
+import { isEmpty } from "../utils/helperFunctions";
+import GlobalSpinner from "../ui/GlobalSpinner";
+
 
 const Divider = styled.div`
   height: 1px;
@@ -34,15 +33,49 @@ const Radios = styled.div`
   }
 `;
 
+
 const ButtonRadios = styled(RadioButtonGroup)`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-gap: 8px;
 
+  span {
+    background: #19c39c;
+    position: absolute;
+    top: -26px;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    right: 10px;
+    color: #fff;
+    display: none;
+  }
+
   button:focus {
     box-shadow: none;
   }
+
+
+  button:hover,
+  button:focus,
+  button[aria-checked="true"] {
+    span {
+      display: flex;
+    }
+  }
 `;
+
+
+const Message = styled.h2`
+  margin-top: 16px;
+
+
+  span {
+    color: ${(props) => props.theme.colors.green.brand};
+  } 
+`
 
 const CustomRadio = React.forwardRef((props, ref) => {
   const { isChecked, isDisabled, value, ...rest } = props;
@@ -63,24 +96,43 @@ const CustomRadio = React.forwardRef((props, ref) => {
 });
 
 const VotingForm = () => {
-  const [category, setCategories] = useState("Comedy");
   const dispatch = useDispatch();
-  const { isAuthenticated, user } = useSelector(authSelector);
   const { podId } = useParams();
+  const [currentCategory, setCurrentCategories] = useState("");
+  const { isAuthenticated, user } = useSelector(authSelector);
+  const singlePodcast = useSelector((state) => selectPodcastById(state, podId))
+  const podcastLoading = useSelector(state => state.podcasts.loading);
 
   useEffect(() => {
+    dispatch(getSinglePodcast(podId));
+    
     if (isAuthenticated) {
       dispatch(currentUser());
     }
-  }, [dispatch, isAuthenticated]);
-
+  }, [dispatch, isAuthenticated, podId]);
+  
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    let userData = {
+      userId: [user._id],
+      currentCategory
+    };
 
-    console.log(category);
-    // dispatch(categoryVote(category, user._id, podId));
+    dispatch(categoryVote(userData, podId));
   };
+  
 
+  const capitalize = (s) => {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
+  }
+
+  if (podcastLoading || isEmpty(singlePodcast))
+  return <GlobalSpinner />;
+  
+  const { category } = singlePodcast
+  
   return (
     <Box p="32px" margin="0 auto" maxWidth="1280px">
       <h2>Choose Category</h2>
@@ -94,19 +146,22 @@ const VotingForm = () => {
 
             <ButtonRadios
               defaultValue="Comedy"
-              onChange={(val) => setCategories(val)}
+              onChange={(val) => setCurrentCategories(val)}
+              // value={currentCategory}
             >
-              <CustomRadio value="comedy">Comedy</CustomRadio>
-              <CustomRadio value="politics">Politics</CustomRadio>
-              <CustomRadio value="science">Science</CustomRadio>
-              <CustomRadio value="conspiracy">Conspiracy</CustomRadio>
+            {category.map((each, i) => (
+              <CustomRadio value={each.id} key={i}>{capitalize(each.label)}<span>{each.value}</span></CustomRadio>
+            ))}
             </ButtonRadios>
           </Radios>
 
+
+          <Message>You want more <span>{currentCategory}</span></Message>
+          
           <Divider />
 
           <FormHelperText id="guest-name">
-            <CustomButton appearance="primary" type="submit">
+            <CustomButton appearance="primary" type="submit" disabled={currentCategory === ''}>
               Vote
             </CustomButton>
           </FormHelperText>
