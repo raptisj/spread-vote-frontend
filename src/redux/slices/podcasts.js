@@ -13,7 +13,7 @@ export const usersAdapter = createEntityAdapter({
   selectId: (podcast) => podcast._id,
 });
 
-const initialState = usersAdapter.getInitialState({ loading: false, hasErrors: false });
+const initialState = usersAdapter.getInitialState({ loading: false, actionLoader: false, hasErrors: false, routeRedirect: null, showToast: null  });
 
 const userAPI = {
   async fetchAll() {
@@ -24,6 +24,10 @@ const userAPI = {
     const res = await axios.get(`${url}/podcasts/${id}`);
     return res
   },
+  async voteOne(userData, podId, getState) {
+    const res = await axios.patch(`${url}/podcasts/${podId}/vote-category`, userData, tokenConfig(getState));
+    return res
+  },
 };
 
 export const getAllPodcasts = createAsyncThunk("podcast/fetchAll", async () => {
@@ -31,12 +35,17 @@ export const getAllPodcasts = createAsyncThunk("podcast/fetchAll", async () => {
   return response.data;
 });
 
-
 export const getSinglePodcast = createAsyncThunk("podcast/fetchOne", async (id) => {
   const response = await userAPI.fetchOne(id);
   return response.data;
 });
 
+export const categoryVote = createAsyncThunk("podcast/voteOne", async (data, {getState}) => {
+  const {userData, podId} = data
+  const response = await userAPI.voteOne(userData, podId, getState);
+  
+  return response;
+});
 
 
 const podcastsSlice = createSlice({
@@ -58,6 +67,7 @@ const podcastsSlice = createSlice({
     builder.addCase(getAllPodcasts.fulfilled, (state, action) => {
       usersAdapter.setAll(state, action.payload);
       state.loading = false;
+      state.routeRedirect = null
     });
     builder.addCase(getSinglePodcast.pending, (state) => {
       state.loading = true;
@@ -65,6 +75,21 @@ const podcastsSlice = createSlice({
     builder.addCase(getSinglePodcast.fulfilled, (state, action) => {
       usersAdapter.upsertOne(state, action.payload);
       state.loading = false;
+      state.routeRedirect = null
+    });
+    builder.addCase(categoryVote.pending, (state) => {
+      state.actionLoader = true;
+    });
+    builder.addCase(categoryVote.fulfilled, (state, action) => {
+      state.actionLoader = false;
+      state.routeRedirect = `/podcasts/${action.meta.arg.podId}/`
+      // console.log(action)
+      state.hasErrors = null
+    });
+    builder.addCase(categoryVote.rejected, (state, action) => {
+      state.actionLoader = false;
+      // console.log(action)
+      state.hasErrors = action.error
     });
   }
 });
@@ -92,29 +117,29 @@ export const {
  *
  *  VOTE FOR CATEGORY
  */
-export const categoryVote = (userData, podId) => async (
-  dispatch,
-  getState
-) => {
-  dispatch(loadPodcasts());
+// export const categoryVote = (userData, podId) => async (
+//   dispatch,
+//   getState
+// ) => {
+//   dispatch(loadPodcasts());
 
-  let apiUrl = `${url}/podcasts/${podId}/vote-category`;
+//   let apiUrl = `${url}/podcasts/${podId}/vote-category`;
 
-  try {
-    await axios.patch(apiUrl, userData, tokenConfig(getState));
+//   try {
+//     await axios.patch(apiUrl, userData, tokenConfig(getState));
 
-    dispatch(categoryVoteSuccess())
-    window.location.replace(`/podcasts/${podId}/`);
-  } catch (error) {
-    if (error) {
-      if (error.response.status === 400) {
-        dispatch(podcastsFailure());
-      } else {
-        dispatch(podcastsFailure());
-      }
-    }
-  }
-};
+//     dispatch(categoryVoteSuccess())
+//     window.location.replace(`/podcasts/${podId}/`);
+//   } catch (error) {
+//     if (error) {
+//       if (error.response.status === 400) {
+//         dispatch(podcastsFailure());
+//       } else {
+//         dispatch(podcastsFailure());
+//       }
+//     }
+//   }
+// };
 
 
 /**

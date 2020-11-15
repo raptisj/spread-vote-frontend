@@ -35,6 +35,7 @@ export default {
     },
   },
   borderRadius: {
+    ...theme,
     soft: "4px",
     full: "9999px",
   },

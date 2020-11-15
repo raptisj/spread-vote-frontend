@@ -27,6 +27,7 @@ import SmallSpinner from "../ui/SmallSpinner";
 import { getSinglePodcast, selectPodcastById } from "../redux/slices/podcasts";
 import Warning from "../icons/Warning";
 import theme from "../theme";
+import Layout from "../screens/Layout";
 
 const Divider = styled.div`
   height: 1px;
@@ -60,6 +61,7 @@ const ImageBox = styled.div`
   p {
     margin-top: 16px;
     padding: 16px;
+    white-space: break-spaces;
   }
 `;
 
@@ -73,7 +75,12 @@ const ScrapeLoader = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   margin: 24px 0;
+
+  p {
+    margin-top: 1rem;
+  }
 `;
 
 const Body = styled.div`
@@ -94,6 +101,25 @@ const Body = styled.div`
 // @banditaras
 
 // @JohnRaptisM
+
+// @swyx
+
+// @levelsio 
+
+
+//  @taniarascia
+
+
+// let po = [
+//   'Life is too short not to play long term games.\n\nDX ',
+//   '@AWSAmplify',
+//   '\nAuthor ',
+//   '@Coding_Career',  
+//   '\nInstigator ',
+//   '@SvelteSociety',
+//   '\nAngel Investor \n\nPitch me: swyx@hey.com'
+// ]
+
 const AddGuest = () => {
   const dispatch = useDispatch();
   const { podId } = useParams();
@@ -148,10 +174,12 @@ const AddGuest = () => {
   };
 
   if (loading || user === null || singlePodcast === null)
-    return <GlobalSpinner />;
+  return <GlobalSpinner />;
+  
+  const guestAlreadyExists = twitterData !== null && singlePodcast.guests.find(p => p.twitter_name === twitterData.twitter_name)
 
   return (
-    <Box p="32px" margin="0 auto" maxWidth="1280px">
+    <Layout>
       <h2>Add Guest</h2>
       <form onSubmit={handleSubmit}>
         <FormControl maxWidth="700px" m="32px 0">
@@ -189,24 +217,7 @@ const AddGuest = () => {
 
           <Body>
             <div>
-              {twitterData !== null && !isEmpty(twitterData) && (
-                <ImageBox>
-                  <Image
-                    rounded="9999px"
-                    size="150px"
-                    src={twitterData.twitter_image}
-                    alt={twitterData.name}
-                    display="block"
-                    p="16px"
-                    objectFit="cover"
-                  />
-                  <h3>{twitterData.name}</h3>
-                  <span>{twitterData.twitter_name}</span>
-                  <p>{twitterData.bio}</p>
-                </ImageBox>
-              )}
-              {/* 
-              {twitterData !== null && twitterData._id && (
+              {twitterData !== null && guestAlreadyExists && (
                 <React.Fragment>
                   <GuestExistsMsg>
                     {twitterData.votes.includes(user._id)
@@ -223,7 +234,23 @@ const AddGuest = () => {
                     />
                   </Link>
                 </React.Fragment>
-              )} */}
+              )}  
+              {twitterData !== null && !isEmpty(twitterData) && !guestAlreadyExists && (
+                <ImageBox>
+                  <Image
+                    rounded="9999px"
+                    size="150px"
+                    src={twitterData.twitter_image}
+                    alt={twitterData.name}
+                    display="block"
+                    p="16px"
+                    objectFit="cover"
+                  />
+                  <h3>{twitterData.name}</h3>
+                  <span>{twitterData.twitter_name}</span>
+                  <p>{twitterData.bio}</p>
+                </ImageBox>
+              )}
 
               {isEmpty(twitterData) && twitterData !== null && (
                 <div>Could not find guest</div>
@@ -232,6 +259,7 @@ const AddGuest = () => {
               {scrapeLoader && (
                 <ScrapeLoader>
                   <SmallSpinner />
+                  <p>It might take a few seconds. . .</p>
                 </ScrapeLoader>
               )}
             </div>
@@ -242,7 +270,7 @@ const AddGuest = () => {
             <CustomButton
               appearance="primary"
               type="submit"
-              disabled={isEmpty(twitterData) || twitterData === null}
+              disabled={isEmpty(twitterData) || twitterData === null ||  guestAlreadyExists}
               isLoading={loading}
             >
               Submit
@@ -250,7 +278,7 @@ const AddGuest = () => {
           </FormHelperText>
         </FormControl>
       </form>
-    </Box>
+    </Layout>
   );
 };
 

@@ -37,6 +37,7 @@ const Bio = styled.p`
   margin-top: 16px;
   border-radius: 4px;
   position: relative;
+  white-space: break-spaces;
 
   &::before {
     content: "";

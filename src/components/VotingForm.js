@@ -6,8 +6,9 @@ import {
   FormLabel,
   FormHelperText,
   RadioButtonGroup,
+  useToast
 } from "@chakra-ui/core";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Fuse from "fuse.js";
 import { useDispatch, useSelector } from "react-redux";
 import { authSelector, currentUser } from "../redux/slices/auth";
@@ -16,7 +17,8 @@ import styled from "@emotion/styled";
 import CustomButton from "../ui/Button";
 import { isEmpty } from "../utils/helperFunctions";
 import GlobalSpinner from "../ui/GlobalSpinner";
-
+import Toasts from "../ui/Toasts";
+import GoBack from '../ui/GoBack'
 
 const Divider = styled.div`
   height: 1px;
@@ -102,39 +104,77 @@ const VotingForm = () => {
   const { isAuthenticated, user } = useSelector(authSelector);
   const singlePodcast = useSelector((state) => selectPodcastById(state, podId))
   const podcastLoading = useSelector(state => state.podcasts.loading);
+  const routeRedirect = useSelector(state => state.podcasts.routeRedirect);
+  // const hasErrors = useSelector(state => state.podcasts.hasErrors);
+  const actionLoader = useSelector(state => state.podcasts.actionLoader);
+  const history = useHistory();
+  // const toast = useToast();
+  // const [err, setErr] = useState(hasErrors)
 
+  // useEffect(() => {
+  //   hasErrors && toast({
+  //     title: "Warning.",
+  //     description: "This is a warning.",
+  //     status: "warning",
+  //     duration: 9000,
+  //     isClosable: true,
+  //   })
+  //   setErr(false)
+  // },[hasErrors, toast, err])
+
+// console.log(err)
+//   console.log(hasErrors)
   useEffect(() => {
     dispatch(getSinglePodcast(podId));
+    routeRedirect !== null && history.push(routeRedirect)
     
     if (isAuthenticated) {
       dispatch(currentUser());
     }
-  }, [dispatch, isAuthenticated, podId]);
+  }, [dispatch, isAuthenticated, podId, routeRedirect, history]);
   
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    let userData = {
-      userId: [user._id],
-      currentCategory
+    const userData = {
+      userId: user._id,
+      currentCategory,
     };
 
-    dispatch(categoryVote(userData, podId));
+    dispatch(categoryVote({userData, podId}));
   };
-  
 
+  
   const capitalize = (s) => {
     if (typeof s !== 'string') return ''
     return s.charAt(0).toUpperCase() + s.slice(1)
   }
-
-  if (podcastLoading || isEmpty(singlePodcast))
+  
+  if (podcastLoading || isEmpty(singlePodcast) || routeRedirect !== null || user === null)
   return <GlobalSpinner />;
+
+  const { category, name } = singlePodcast
   
-  const { category } = singlePodcast
-  
+
+
+//   const array = [2, 5, 9];
+
+// const findId = (data, id) => {
+//   const index = data.indexOf(id);
+//   if (index > -1) {
+//     data.splice(index, 1);
+//     return data
+//   }
+// }
+
+// // array = [2, 9]
+// console.log(findId(array, 5));
+
+
   return (
     <Box p="32px" margin="0 auto" maxWidth="1280px">
+      <GoBack path={`/podcasts/${podId}`} />
+
       <h2>Choose Category</h2>
 
       <form onSubmit={handleSubmit}>
@@ -145,9 +185,8 @@ const VotingForm = () => {
             </FormLabel>
 
             <ButtonRadios
-              defaultValue="Comedy"
+              defaultValue={user.category}
               onChange={(val) => setCurrentCategories(val)}
-              // value={currentCategory}
             >
             {category.map((each, i) => (
               <CustomRadio value={each.id} key={i}>{capitalize(each.label)}<span>{each.value}</span></CustomRadio>
@@ -155,13 +194,13 @@ const VotingForm = () => {
             </ButtonRadios>
           </Radios>
 
-
-          <Message>You want more <span>{currentCategory}</span></Message>
+         {/* <Toasts hasErrors={hasErrors} /> */}
+          {user.category !== null && <Message>Currently you want more <span>{user.category}</span> from <span>{name}</span></Message>} 
           
           <Divider />
 
           <FormHelperText id="guest-name">
-            <CustomButton appearance="primary" type="submit" disabled={currentCategory === ''}>
+            <CustomButton appearance="primary" isLoading={actionLoader} type="submit" disabled={currentCategory === '' || currentCategory === user.category}>
               Vote
             </CustomButton>
           </FormHelperText>

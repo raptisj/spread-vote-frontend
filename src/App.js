@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { ThemeProvider } from "@chakra-ui/core";
+import { ThemeProvider, CSSReset} from "@chakra-ui/core";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import Landing from "./components/Landing";
@@ -61,6 +61,7 @@ const BackgroundShape = styled.div`
 function App() {
   return (
     <ThemeProvider theme={theme}>
+      <CSSReset />
       <BackgroundShape />
       <Router>
         <Navigation />

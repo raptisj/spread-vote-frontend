@@ -19,24 +19,28 @@ import styled from "@emotion/styled";
 //     id: "comedy",
 //     label: "comedy",
 //     value: 21,
+//     users: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 //     color: '#19c39c'
 //   },
 //   {
 //     id: "politics",
 //     label: "politics",
 //     value: 47,
+//     users: [11, 12, 13, 14, 15, 16, 17, 18, 19],
 //     color: 'red'
 //   },
 //   {
 //     id: "science",
 //     label: "science",
 //     value: 52,
+//     users: [21, 22, 23, 24, 25, 26, 27, 28, 29],
 //     color: 'blue'
 //   },
 //   {
 //     id: "conspiracy",
 //     label: "conspiracy",
 //     value: 15,
+//     users: [31, 32, 33, 34, 35, 36, 37, 38, 39],
 //   },
 // ];
 
@@ -68,7 +72,23 @@ const Landing = () => {
   if (loading || podcastLoading || isEmpty(singlePodcast))
   return <GlobalSpinner />;
 
-  const { category, guests } = singlePodcast
+  const {category,  guests } = singlePodcast
+// category 
+
+
+// const normalizedCategories = categoryData.reduce((data, item) => {
+//   data[item.id] = item
+//   return data
+// }, {})
+// const categoryId = categoryData.map(category => category.id)
+// console.log(categoryId.map(c => normalizedCategories[c]))
+// console.log(normalizedCategories)
+// console.log(!!categoryData.filter(p => p.users.includes(3))[0]?.label)
+// console.log(!!categoryData.filter(p => p.users.includes(43))[0]?.label)
+
+// const findCategory = (data, id) => !!data.filter(p => p.users.includes(id))[0]?.label
+
+// console.log(findCategory(categoryData, 53))
 
   return (
     <Layout>

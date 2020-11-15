@@ -23,6 +23,7 @@ const guestsSlice = createSlice({
 
     loadScraper: (state) => {
       state.scrapeLoader = true;
+      state.twitterData = null;
     },
 
     getAllGuestsSuccess: (state, { payload }) => {
