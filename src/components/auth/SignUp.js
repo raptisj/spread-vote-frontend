@@ -4,6 +4,7 @@ import SignUpForm from "../../ui/SignUpForm";
 import { useDispatch, useSelector } from "react-redux";
 import { signUp, authSelector } from "../../redux/slices/auth";
 import Layout from "../../screens/Layout";
+import { useLocation } from "react-router-dom";
 
 const SignUp = () => {
   const { errors, loading } = useSelector(authSelector);
@@ -13,6 +14,8 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+  const { state = "/" } = useLocation()
+  const { customPath } = typeof state === 'string' ? {customPath: '/'} : state 
 
   const isEmptyField =
     email === "" || password === "" || firstName === "" || lastName === "";
@@ -22,7 +25,7 @@ const SignUp = () => {
 
     const userData = { firstName, lastName, email, password };
 
-    dispatch(signUp(userData));
+    dispatch(signUp(userData, customPath));
   };
 
   return (

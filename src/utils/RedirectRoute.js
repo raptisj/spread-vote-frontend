@@ -6,7 +6,7 @@ import { authSelector } from "../redux/slices/auth";
 const RedirectRoute = ({ component: Component, ...rest }) => {
   const { isAuthenticated } = useSelector(authSelector);
   // console.log(window.localStorage.getItem("auth"));
-  console.log(isAuthenticated);
+  // console.log(isAuthenticated);
   return (
     <Route
       {...rest}

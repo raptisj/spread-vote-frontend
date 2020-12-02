@@ -107,9 +107,9 @@ const Landing = () => {
         maxWidth="1280px"
       >
         <About singlePodcast={singlePodcast} />
-        <Box gridRow="1 / -1">
+        {/* <Box gridRow="1 / -1">
           <Categories categoryData={category} />
-        </Box>
+        </Box> */}
       </Grid>
     </Layout>
   );

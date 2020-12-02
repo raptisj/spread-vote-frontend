@@ -93,7 +93,7 @@ export default authSlice.reducer;
  *
  *  CREATE USER
  */
-export const signUp = (userData) => async (dispatch) => {
+export const signUp = (userData, customPath) => async (dispatch) => {
   dispatch(loadReport());
 
   let apiUrl = `${url}/signup/`;
@@ -103,14 +103,14 @@ export const signUp = (userData) => async (dispatch) => {
 
     dispatch(signUpSuccess(res.data));
 
-    window.location.replace("/");
+    window.location.replace(customPath);
   } catch (error) {
     if (error) {
       if (error.response.status === 400) {
         dispatch(reportFailure(error.response.data));
       } else {
         dispatch(reportFailure());
-        window.location.replace("/add-guest");
+        // window.location.replace("/add-guest");
       }
     }
   }
@@ -120,7 +120,7 @@ export const signUp = (userData) => async (dispatch) => {
  *
  *  LOGIN USER
  */
-export const login = (userData) => async (dispatch) => {
+export const login = (userData, customPath) => async (dispatch) => {
   dispatch(loadReport());
 
   let apiUrl = `${url}/login/`;
@@ -130,14 +130,14 @@ export const login = (userData) => async (dispatch) => {
 
     dispatch(loginSuccess(res.data));
 
-    window.location.replace("/");
+    window.location.replace(customPath);
   } catch (error) {
     if (error) {
       if (error.response.status === 400) {
         dispatch(reportFailure(error.response.data));
       } else {
         dispatch(reportFailure());
-        window.location.replace("/add-guest");
+        // window.location.replace("/add-guest");
       }
     }
   }
@@ -149,7 +149,7 @@ export const login = (userData) => async (dispatch) => {
  */
 export const logout = () => (dispatch) => {
   window.localStorage.removeItem("token");
-  window.location.replace("/");
+  window.location.replace("/auth/login/");
 
   dispatch(logoutSuccess());
 };

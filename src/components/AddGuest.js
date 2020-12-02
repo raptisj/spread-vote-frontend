@@ -270,7 +270,7 @@ const AddGuest = () => {
             <CustomButton
               appearance="primary"
               type="submit"
-              disabled={isEmpty(twitterData) || twitterData === null ||  guestAlreadyExists}
+              disabled={isEmpty(twitterData) || twitterData === null || guestAlreadyExists}
               isLoading={loading}
             >
               Submit

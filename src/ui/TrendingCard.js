@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Image } from "@chakra-ui/core";
 import styled from "@emotion/styled";
+import {
+  fetchUpdateTwitterData,
+  guestsSelector
+} from "../redux/slices/guests";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams } from 'react-router-dom' 
+
 
 const Card = styled(Box)`
   border: none;
@@ -75,7 +82,28 @@ const ImageBox = styled.div`
 `;
 
 const TrendingCard = ({ hasVoted = false, card }) => {
+  const { twitterData } = useSelector(guestsSelector);
   const { twitter_name, twitter_image, votes, name } = card;
+  const [err, setErr] = useState(false)
+  const dispatch = useDispatch()
+  const { podId } = useParams();
+
+  
+  const findBrokenImage = (name) => {
+ 
+    setErr(true)
+
+    const data = {
+      name,
+    };
+
+    dispatch(fetchUpdateTwitterData(data, podId))
+ }
+
+// console.log(twitterData)
+
+
+ let img = err ? 'https://upload.wikimedia.org/wikipedia/commons/e/eb/Ash_Tree_-_geograph.org.uk_-_590710.jpg' : twitter_image
 
   return (
     <Card hasVoted={hasVoted}>
@@ -84,7 +112,8 @@ const TrendingCard = ({ hasVoted = false, card }) => {
         <Image
           rounded="9999px"
           size="150px"
-          src={twitter_image}
+          src={img}
+          onError={() => findBrokenImage(twitter_name)}
           alt={name}
           margin="0 auto"
           display="block"

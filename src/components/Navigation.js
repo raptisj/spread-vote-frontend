@@ -126,8 +126,8 @@ const Navigation = () => {
               <NavLink to={`/podcasts/${podId}/guests/`}>Guests</NavLink>
             )}
 
-            <NavLink to="/auth/login/">Log in</NavLink>
-            <NavLink to="/auth/signup/">Sign up</NavLink>
+            <NavLink to={{pathname: "/auth/login/", state: {customPath: pathname} }}>Log in</NavLink>
+            <NavLink to={{pathname: "/auth/signup/", state: {customPath: pathname} }}>Sign up</NavLink>
           </React.Fragment>
         )}
       </Box>

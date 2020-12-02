@@ -4,12 +4,15 @@ import LoginForm from "../../ui/LoginForm";
 import { authSelector, login, resetErrors } from "../../redux/slices/auth";
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "../../screens/Layout";
+import { useLocation } from "react-router-dom";
 
 const Login = () => {
   const dispatch = useDispatch();
   const { errors, loading } = useSelector(authSelector);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { state = "/" } = useLocation()
+  const { customPath } = typeof state === 'string' ? {customPath: '/'} : state 
 
   const isEmptyField = email === "" || password === "";
 
@@ -17,9 +20,8 @@ const Login = () => {
     e.preventDefault();
 
     const userData = { email, password };
-    dispatch(login(userData));
+    dispatch(login(userData, customPath));
   };
-
 
   useEffect(() => {
     dispatch(resetErrors())

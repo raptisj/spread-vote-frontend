@@ -5,6 +5,7 @@ import {
  } from "@reduxjs/toolkit";
 import axios from "axios";
 import { tokenConfig } from './auth'
+import { emptySingleGuest } from './guests'
 
 let url = "http://localhost:4000";
 
@@ -35,8 +36,9 @@ export const getAllPodcasts = createAsyncThunk("podcast/fetchAll", async () => {
   return response.data;
 });
 
-export const getSinglePodcast = createAsyncThunk("podcast/fetchOne", async (id) => {
+export const getSinglePodcast = createAsyncThunk("podcast/fetchOne", async (id, {dispatch}) => {
   const response = await userAPI.fetchOne(id);
+  dispatch(emptySingleGuest())
   return response.data;
 });
 

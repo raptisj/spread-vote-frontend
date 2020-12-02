@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { tokenConfig } from "./auth";
+import { tokenConfig, logout } from "./auth";
 
 let url = "http://localhost:4000";
 
@@ -58,6 +58,10 @@ const guestsSlice = createSlice({
       state.loading = false;
       state.hasErrors = true;
     },
+
+    emptySingleGuest: (state) => {
+      state.singleGuest = null; 
+    }
   },
 });
 
@@ -70,6 +74,7 @@ export const {
   preFetchSuccess,
   createGuestSuccess,
   guestsFailure,
+  emptySingleGuest
 } = guestsSlice.actions;
 
 export const guestsSelector = (state) => state.guests;
@@ -141,6 +146,12 @@ export const upVoteGuest = (userId, id) => async (dispatch, getState) => {
     if (error) {
       if (error.response.status === 400) {
         dispatch(guestsFailure());
+      } else if (error.response.status === 401) {
+        dispatch(logout())
+        // window.location.reload();
+        // window.history.pushState('/auth/login/')
+        dispatch(guestsFailure());
+        console.log('fuck')
       } else {
         dispatch(guestsFailure());
       }
@@ -230,29 +241,33 @@ export const createGuest = (twitterData, podId) => async (
   }
 };
 
-// /**
-//  *
-//  *  VOTE FOR CATEGORY
-//  */
-// export const categoryVote = (category, userId, podId) => async (
-//   dispatch,
-//   getState
-// ) => {
-//   dispatch(loadGuests());
 
-//   let apiUrl = `${url}/podcasts/${podId}/vote-category`;
 
-//   try {
-//     await axios.patch(apiUrl, userId, tokenConfig(getState));
+/**
+ *
+ *  FIND AND CREATE
+ */
+export const fetchUpdateTwitterData = (twitterName, podId) => async (
+  dispatch,
+  getState
+) => {
+  dispatch(loadScraper());
 
-//     window.location.replace(`/podcasts/${podId}/`);
-//   } catch (error) {
-//     if (error) {
-//       if (error.response.status === 400) {
-//         dispatch(guestsFailure());
-//       } else {
-//         dispatch(guestsFailure());
-//       }
-//     }
-//   }
-// };
+  let apiUrl = `${url}/podcasts/${podId}/guests/create/fetch`;
+
+  try {
+    const res = await axios.patch(apiUrl, twitterName, tokenConfig(getState));
+
+    console.log(res.data)
+
+    // dispatch(preFetchSuccess(res.data));
+  } catch (error) {
+    if (error) {
+      if (error.response.status === 400) {
+        dispatch(guestsFailure());
+      } else {
+        dispatch(guestsFailure());
+      }
+    }
+  }
+};
