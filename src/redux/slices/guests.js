@@ -49,7 +49,7 @@ const guestsSlice = createSlice({
       state.twitterData = payload;
     },
 
-    createGuestSuccess: (state, { payload }) => {
+    createGuestSuccess: (state) => {
       state.loading = false;
       state.twitterData = null;
     },

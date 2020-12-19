@@ -109,17 +109,6 @@ const Body = styled.div`
 
 //  @taniarascia
 
-
-// let po = [
-//   'Life is too short not to play long term games.\n\nDX ',
-//   '@AWSAmplify',
-//   '\nAuthor ',
-//   '@Coding_Career',  
-//   '\nInstigator ',
-//   '@SvelteSociety',
-//   '\nAngel Investor \n\nPitch me: swyx@hey.com'
-// ]
-
 const AddGuest = () => {
   const dispatch = useDispatch();
   const { podId } = useParams();
