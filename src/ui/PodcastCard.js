@@ -31,7 +31,7 @@ const Card = styled(Box)`
     transition: all 0.3s;
 
     img {
-      transform: scale(1.05);
+      transform: scale(1.02);
       transition: all 0.3s;
     }
   }

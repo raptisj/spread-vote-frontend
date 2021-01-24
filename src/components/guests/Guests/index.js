@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Box, Grid, Input, FormHelperText } from "@chakra-ui/core";
 import { Link, useParams } from "react-router-dom";
-import LinkButton from "../ui/LinkButton";
 import { useDispatch, useSelector } from "react-redux";
-import { authSelector, currentUser } from "../redux/slices/auth";
-import GlobalSpinner from "../ui/GlobalSpinner";
-import FullWidthCard from "../ui/FullWidthCard";
-import GoBack from "../ui/GoBack";
-import Layout from "../screens/Layout";
+import { authSelector, currentUser } from "../../../redux/slices/auth";
+import { getSinglePodcast, selectPodcastById } from "../../../redux/slices/podcasts";
+import { selectAllGuests } from '../../../redux/slices/guests';
 import styled from "@emotion/styled";
 import Fuse from "fuse.js";
-import { sortElements } from "../utils/helperFunctions";
-import { getSinglePodcast, selectPodcastById } from "../redux/slices/podcasts";
+import LinkButton from "../../../ui/LinkButton";
+import GlobalSpinner from "../../../ui/GlobalSpinner";
+import FullWidthCard from "../../../ui/FullWidthCard";
+import GoBack from "../../../ui/GoBack";
+import Layout from "../../../screens/Layout";
+import { sortElements } from "../../../utils/helperFunctions";
+import Header from "../../../ui/Header";
 
 const MainInput = styled(Input)`
   border: 1px solid #e6e6e6;
@@ -40,26 +42,26 @@ const AllGuest = () => {
   const { isAuthenticated, user } = useSelector(authSelector);
   const singlePodcast = useSelector((state) => selectPodcastById(state, podId))
   const loading = useSelector(state => state.podcasts.loading)
+  const guestLoading = useSelector(state => state.guests.loading);
+  const podcastGuests = useSelector(state => selectAllGuests(state));
   const [query, setQuery] = useState("");
 
   useEffect(() => {
     dispatch(getSinglePodcast(podId));
 
-    if (isAuthenticated) {
-      dispatch(currentUser());
-    }
+    isAuthenticated && dispatch(currentUser());
   }, [dispatch, isAuthenticated, podId]);
 
-  if (loading || singlePodcast === undefined) return <GlobalSpinner />;
+  if (loading || singlePodcast === undefined || guestLoading) return <GlobalSpinner />;
 
   const onChange = (e) => {
     setQuery(e.target.value);
   };
 
-  const fuse = new Fuse(singlePodcast.guests, fuseOptions);
+  const fuse = new Fuse(podcastGuests, fuseOptions);
   const searchResults = query
     ? fuse.search(query).map((p) => p.item)
-    : singlePodcast.guests;
+    : podcastGuests;
 
   return (
     <Layout>
@@ -70,7 +72,8 @@ const AllGuest = () => {
         justifyContent="space-between"
         marginBottom="16px"
       >
-        <h2>All Guests</h2>
+        <Header heading="All Guests" />
+        
         <Box textAlign="center">
           <LinkButton to={`/podcasts/${podId}/add-guest/`}>
             Add new Guest
@@ -96,7 +99,7 @@ const AllGuest = () => {
       </Grid>
 
       <Grid templateColumns="repeat(1, 1fr)" gap="16px" mt="32px">
-        {singlePodcast.guests.length > 0 &&
+        {podcastGuests.length > 0 &&
           sortElements([...searchResults]).map((card, i) => (
             <Link to={`/podcasts/${podId}/guests/${card._id}`} key={i}>
               <FullWidthCard

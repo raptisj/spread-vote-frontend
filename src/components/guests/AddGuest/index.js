@@ -8,26 +8,26 @@ import {
   Image,
 } from "@chakra-ui/core";
 import styled from "@emotion/styled";
-import CustomButton from "../ui/Button";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   preFetchGuest,
   createGuest,
   getAllGuests,
   guestsSelector,
-} from "../redux/slices/guests";
-import { currentUser } from "../redux/slices/auth";
-import { isEmpty } from "../utils/helperFunctions";
-import GlobalSpinner from "../ui/GlobalSpinner";
-import { authSelector } from "../redux/slices/auth";
-import FullWidthCard from "../ui/FullWidthCard";
-import SmallSpinner from "../ui/SmallSpinner";
-import { getSinglePodcast, selectPodcastById } from "../redux/slices/podcasts";
-import Warning from "../icons/Warning";
-import theme from "../theme";
-import Layout from "../screens/Layout";
+} from "../../../redux/slices/guests";
+import { currentUser } from "../../../redux/slices/auth";
+import { getSinglePodcast, selectPodcastById } from "../../../redux/slices/podcasts";
+import { authSelector } from "../../../redux/slices/auth";
+import { isEmpty } from "../../../utils/helperFunctions";
+import GlobalSpinner from "../../../ui/GlobalSpinner";
+import FullWidthCard from "../../../ui/FullWidthCard";
+import SmallSpinner from "../../../ui/SmallSpinner";
+import CustomButton from "../../../ui/Button";
+import Warning from "../../../icons/Warning";
+import Layout from "../../../screens/Layout";
+import theme from "../../../theme";
 
 const Divider = styled.div`
   height: 1px;
@@ -49,6 +49,9 @@ const WarningMessage = styled.span`
 const ImageBox = styled.div`
   margin-top: 24px;
   display: inline-block;
+  background: #19c39c20;
+  padding: 16px;
+  border-radius: 4px;
 
   h3 {
     color: ${(props) => props.theme.colors.black.dark};
@@ -106,13 +109,12 @@ const Body = styled.div`
 
 // @levelsio 
 
-
 //  @taniarascia
 
 const AddGuest = () => {
   const dispatch = useDispatch();
   const { podId } = useParams();
-  const { twitterData, loading, scrapeLoader } = useSelector(guestsSelector);
+  const { twitterData, loading, scrapeLoader, hasErrors } = useSelector(guestsSelector);
   const { isAuthenticated, user } = useSelector(authSelector);
   const singlePodcast = useSelector((state) => selectPodcastById(state, podId))
   const [inputValue, setInputValue] = useState("");
@@ -125,6 +127,10 @@ const AddGuest = () => {
       dispatch(currentUser());
     }
   }, [dispatch, isAuthenticated, podId]);
+
+  useEffect(() => {
+    if (hasErrors) return setInputValue('');
+  }, [hasErrors])
 
   const handlePaste = (e) => {
     let name = e.clipboardData.getData("Text").replace(/[@]/, "");
@@ -154,9 +160,7 @@ const AddGuest = () => {
       twitter_name: twitterData.twitter_name,
       bio: twitterData.bio,
       podcast_id: podId,
-      podcast_name: singlePodcast.name,
       votes: [user._id],
-      podcasts: [{ podcast_id: podId, podcast_name: singlePodcast.name }],
     };
 
     dispatch(createGuest(data, podId));
@@ -224,7 +228,7 @@ const AddGuest = () => {
                   </Link>
                 </React.Fragment>
               )}  
-              {twitterData !== null && !isEmpty(twitterData) && !guestAlreadyExists && (
+              {twitterData !== null && !isEmpty(twitterData) && !hasErrors && !guestAlreadyExists && (
                 <ImageBox>
                   <Image
                     rounded="9999px"
@@ -241,6 +245,10 @@ const AddGuest = () => {
                 </ImageBox>
               )}
 
+              {hasErrors && (
+                <div>Something went wrong</div>
+              )}
+    
               {isEmpty(twitterData) && twitterData !== null && (
                 <div>Could not find guest</div>
               )}
@@ -259,7 +267,7 @@ const AddGuest = () => {
             <CustomButton
               appearance="primary"
               type="submit"
-              disabled={isEmpty(twitterData) || twitterData === null || guestAlreadyExists}
+              disabled={isEmpty(twitterData) || twitterData === null || guestAlreadyExists || hasErrors}
               isLoading={loading}
             >
               Submit

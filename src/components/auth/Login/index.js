@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Box, Grid } from "@chakra-ui/core";
-import LoginForm from "../../ui/LoginForm";
-import { authSelector, login, resetErrors } from "../../redux/slices/auth";
-import { useDispatch, useSelector } from "react-redux";
-import Layout from "../../screens/Layout";
 import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { authSelector, login, resetErrors } from "../../../redux/slices/auth";
+import Layout from "../../../screens/Layout";
+import LoginForm from "./LoginForm";
 
 const Login = () => {
   const dispatch = useDispatch();

@@ -1,6 +1,5 @@
-import React from "react";
-import { Box } from "@chakra-ui/core";
 import styled from "@emotion/styled";
+import { Box } from "@chakra-ui/core";
 
 const Container = styled(Box)`
   position: relative;
@@ -39,16 +38,6 @@ const Container = styled(Box)`
   }
 `;
 
-const About = ({ singlePodcast }) => {
-  const { name, about } = singlePodcast;
-  return (
-    <Container>
-      <h2>
-        About <span> {name} </span>
-      </h2>
-      <p>{about}</p>
-    </Container>
-  );
-};
+const AboutStyles = { Container };
 
-export default About;
+export default AboutStyles;

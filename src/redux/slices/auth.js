@@ -10,6 +10,7 @@ export const initialState = {
   token: window.localStorage.getItem("token"),
   isAuthenticated: JSON.parse(window.localStorage.getItem("auth")),
   user: null,
+  userId : window.localStorage.getItem("userId"),
   errors: null,
 };
 
@@ -26,21 +27,23 @@ const authSlice = createSlice({
       state.hasErrors = false;
       state.token = window.localStorage.setItem("token", payload.token);
       state.isAuthenticated = window.localStorage.setItem("auth", true);
+      state.userId = window.localStorage.setItem("userId", payload.id);
     },
-
+    
     loginSuccess: (state, { payload }) => {
       state.loading = false;
       state.hasErrors = false;
       state.token = window.localStorage.setItem("token", payload.token);
       state.isAuthenticated = JSON.stringify(
         window.localStorage.setItem("auth", true)
-      );
-    },
+        );
+      state.userId = window.localStorage.setItem("userId", payload.id);    },
 
     logoutSuccess: (state) => {
       state.loading = false;
       state.hasErrors = false;
       state.isAuthenticated = window.localStorage.setItem("auth", false);
+      state.userId = window.localStorage.setItem("userId", null);
     },
 
     currentSuccess: (state, { payload }) => {
@@ -127,7 +130,6 @@ export const login = (userData, customPath) => async (dispatch) => {
 
   try {
     const res = await axios.post(apiUrl, userData);
-
     dispatch(loginSuccess(res.data));
 
     window.location.replace(customPath);

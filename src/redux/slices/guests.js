@@ -1,17 +1,42 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
 import axios from "axios";
 import { tokenConfig, logout } from "./auth";
+import { URL } from '../../constants';
 
 let url = "http://localhost:4000";
 
-export const initialState = {
+export const guestAdapter = createEntityAdapter({
+  selectId: (guest) => guest._id,
+});
+
+const initialState = guestAdapter.getInitialState({ 
   loading: false,
   scrapeLoader: false,
   hasErrors: false,
-  guests: [],
   singleGuest: null,
   twitterData: null,
+});
+
+export const guestAPI = {
+  async fetchAll(podId) {
+    const res = await axios.get(`${URL}/podcasts/${podId}/guests`);
+    return res
+  },
+  async fetchUserGuests(userId, getState) {
+    const res = await axios.get(`${URL}/user/${userId}`, tokenConfig(getState));
+    return res
+  },
 };
+
+export const getAllGuests = createAsyncThunk("guest/fetchAll", async (podId) => {
+  const response = await guestAPI.fetchAll(podId);
+  return response.data;
+});
+
+export const currentUserGuests = createAsyncThunk("guest/fetchUserGuests", async (userId, { getState }) => {
+  const response = await guestAPI.fetchUserGuests(userId, getState);
+  return response.data;
+});
 
 const guestsSlice = createSlice({
   name: "guests",
@@ -57,12 +82,31 @@ const guestsSlice = createSlice({
     guestsFailure: (state) => {
       state.loading = false;
       state.hasErrors = true;
+      state.twitterData = null;
     },
 
     emptySingleGuest: (state) => {
       state.singleGuest = null; 
     }
   },
+  extraReducers: builder => {
+    builder.addCase(getAllGuests.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getAllGuests.fulfilled, (state, action) => {
+      guestAdapter.setAll(state, action.payload);
+      state.loading = false;
+      state.routeRedirect = null
+    });
+    builder.addCase(currentUserGuests.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(currentUserGuests.fulfilled, (state, action) => {
+      guestAdapter.setAll(state, action.payload);
+      state.loading = false;
+      state.routeRedirect = null
+    });
+  }
 });
 
 export const {
@@ -80,29 +124,37 @@ export const {
 export const guestsSelector = (state) => state.guests;
 export default guestsSlice.reducer;
 
+export const {
+  selectById: selectGuestById,
+  selectIds: selectGuestIds,
+  selectEntities: selectGuestsEntities,
+  selectAll: selectAllGuests,
+  selectTotal: selectTotalGuests
+} = guestAdapter.getSelectors(state => state.guests);
+
 /**
  *
  *  GET ALL GUESTS
  */
-export const getAllGuests = (podId) => async (dispatch, getState) => {
-  dispatch(loadGuests());
+// export const getAllGuests = (podId) => async (dispatch, getState) => {
+//   dispatch(loadGuests());
 
-  let apiUrl = `${url}/podcasts/${podId}/guests`;
+//   let apiUrl = `${URL}/Guests/${podId}/guests`;
 
-  try {
-    const res = await axios.get(apiUrl);
+//   try {
+//     const res = await axios.get(apiUrl);
 
-    dispatch(getAllGuestsSuccess(res.data));
-  } catch (error) {
-    if (error) {
-      if (error.response.status === 400) {
-        dispatch(guestsFailure());
-      } else {
-        dispatch(guestsFailure());
-      }
-    }
-  }
-};
+//     dispatch(getAllGuestsSuccess(res.data));
+//   } catch (error) {
+//     if (error) {
+//       if (error.response.status === 400) {
+//         dispatch(guestsFailure());
+//       } else {
+//         dispatch(guestsFailure());
+//       }
+//     }
+//   }
+// };
 
 /**
  *
@@ -111,7 +163,7 @@ export const getAllGuests = (podId) => async (dispatch, getState) => {
 export const getSingleGuest = (podId, id) => async (dispatch) => {
   dispatch(loadGuests());
 
-  let apiUrl = `${url}/podcasts/${podId}/guests/${id}`;
+  let apiUrl = `${URL}/podcasts/${podId}/guests/${id}`;
 
   try {
     const res = await axios.get(apiUrl);
@@ -135,7 +187,7 @@ export const getSingleGuest = (podId, id) => async (dispatch) => {
 export const upVoteGuest = (userId, id) => async (dispatch, getState) => {
   dispatch(loadGuests());
 
-  let apiUrl = `${url}/guests/up-vote/${id}`;
+  let apiUrl = `${URL}/guests/up-vote/${id}`;
 
   try {
     const res = await axios.patch(apiUrl, userId, tokenConfig(getState));
@@ -169,7 +221,7 @@ export const unVoteGuest = (userId, id, podId) => async (
 ) => {
   dispatch(loadGuests());
 
-  let apiUrl = `${url}/guests/un-vote/${id}`;
+  let apiUrl = `${URL}/guests/un-vote/${id}`;
 
   try {
     await axios.patch(apiUrl, userId, tokenConfig(getState));

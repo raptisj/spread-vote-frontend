@@ -2,8 +2,8 @@ import React from "react";
 import { Box, Input, FormControl, FormLabel } from "@chakra-ui/core";
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
-import CustomButton from "./Button";
-import PasswordInput from "../ui/PasswordInput";
+import CustomButton from "../../../ui/Button";
+import PasswordInput from "../../../ui/PasswordInput";
 
 const Card = styled(Box)`
   background: #fff;

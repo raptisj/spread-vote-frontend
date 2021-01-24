@@ -1,30 +1,17 @@
 import React from "react";
 import { Box, Grid } from "@chakra-ui/core";
 import { Link, useParams } from "react-router-dom";
-import TrendingCard from "../ui/TrendingCard";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
-import { authSelector } from "../redux/slices/auth";
-import { selectPodcastById } from "../redux/slices/podcasts";
+import { authSelector } from "../../../../redux/slices/auth";
+import { selectPodcastById } from "../../../../redux/slices/podcasts";
+import TrendingCard from "../../../../ui/TrendingCard";
+import Header from '../../../../ui/Header';
 
 const StyledLink = styled(Link)`
   color: ${(props) => props.theme.colors.green.brand};
 
   &:hover {
-    color: ${(props) => props.theme.colors.green.hover};
-  }
-`;
-
-const Header = styled.header`
-  h2 {
-    color: ${(props) => props.theme.colors.black.dark};
-  }
-
-  p {
-    color: ${(props) => props.theme.colors.black.soft};
-  }
-
-  p span {
     color: ${(props) => props.theme.colors.green.hover};
   }
 `;

@@ -3,9 +3,9 @@ import { Box } from "@chakra-ui/core";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import styled from "@emotion/styled";
 import { useDispatch } from "react-redux";
-import { authSelector, logout } from "../redux/slices/auth";
+import { authSelector, logout } from "../../redux/slices/auth";
 import { useSelector } from "react-redux";
-import { selectPodcastById } from "../redux/slices/podcasts";
+import { selectPodcastById } from "../../redux/slices/podcasts";
 
 const Nav = styled.nav`
   display: flex;

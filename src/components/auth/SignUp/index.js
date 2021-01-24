@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Box, Grid } from "@chakra-ui/core";
-import SignUpForm from "../../ui/SignUpForm";
+import SignUpForm from "./SignUpForm";
 import { useDispatch, useSelector } from "react-redux";
-import { signUp, authSelector } from "../../redux/slices/auth";
-import Layout from "../../screens/Layout";
+import { signUp, authSelector } from "../../../redux/slices/auth";
+import Layout from "../../../screens/Layout";
 import { useLocation } from "react-router-dom";
 
 const SignUp = () => {

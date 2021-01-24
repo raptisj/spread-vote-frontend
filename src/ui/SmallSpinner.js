@@ -14,5 +14,3 @@ const SmallSpinner = ({ color = "#19c39c" }) => {
 };
 
 export default SmallSpinner;
-
-// <CircularProgress isIndeterminate color="#19c39c"></CircularProgress>;

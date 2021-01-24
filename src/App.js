@@ -2,18 +2,17 @@ import React from "react";
 import "./App.css";
 import { ThemeProvider, CSSReset} from "@chakra-ui/core";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Navigation from "./components/Navigation";
-import Landing from "./components/Landing";
-import SingleGuest from "./components/SingleGuest";
-import VotingForm from "./components/VotingForm";
-import Dashboard from "./components/Dashboard";
-import Footer from "./components/Footer";
+import Navigation from "./components/globals/Navigation";
+import Footer from "./components/globals/Footer";
+import Landing from "./components/podcasts/SinglePodcast";
+import SingleGuest from "./components/guests/SingleGuest";
+import Dashboard from "./components/dashboard/Dashboard";
 import theme from "./theme";
-import SignUp from "./components/auth/SignUp";
 import Login from "./components/auth/Login";
-import AddGuest from "./components/AddGuest";
-import AllGuest from "./components/AllGuests";
-import Podcasts from "./components/Podcasts";
+import SignUp from "./components/auth/SignUp";
+import AddGuest from "./components/guests/AddGuest";
+import Guests from "./components/guests/Guests";
+import Podcasts from "./components/podcasts/Podcasts";
 import RedirectRoute from "./utils/RedirectRoute";
 import PrivateRoute from "./utils/PrivateRoute";
 import styled from "@emotion/styled";
@@ -69,16 +68,11 @@ function App() {
         <Switch>
           <Route exact path="/" component={Podcasts} />
           <Route exact path="/podcasts/:podId" component={Landing} />
-          <Route exact path="/podcasts/:podId/guests/" component={AllGuest} />
+          <Route exact path="/podcasts/:podId/guests/" component={Guests} />
           <Route
             exact
             path="/podcasts/:podId/guests/:id"
             component={SingleGuest}
-          />
-          <PrivateRoute
-            exact
-            path="/podcasts/:podId/vote/"
-            component={VotingForm}
           />
           <PrivateRoute
             exact

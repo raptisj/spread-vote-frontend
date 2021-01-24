@@ -5,8 +5,8 @@ import podcasts from "./slices/podcasts";
 
 const allReducers = combineReducers({
   auth,
-  guests,
   podcasts,
+  guests,
 });
 
 export default allReducers;

@@ -15,7 +15,7 @@ const GlobalSpinner = () => {
         speed="0.95s"
         emptyColor="#19c39c07"
         color="#19c39c"
-        size="7rem"
+        size="4rem"
       />
     </Box>
   );
