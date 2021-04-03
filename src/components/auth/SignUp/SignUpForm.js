@@ -6,7 +6,7 @@ import {
   FormControl,
   FormLabel,
   Checkbox,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import CustomButton from "../../../ui/Button";
@@ -37,11 +37,11 @@ const Card = styled(Box)`
 
  button + p {
     margin-top: 16px;
-    color: ${(props) => props.theme.colors.black.soft};
+    color: ${({ theme }) => theme.colors.black.soft};
     font-size: 14px;
 
     a {
-      color: ${(props) => props.theme.colors.green.brand};
+      color: ${({ theme }) => theme.colors.green.brand};
     }
   }
 `;
@@ -51,14 +51,14 @@ const Terms = styled.div`
 
   p {
     margin: 0 0 0 8px;
-    color: ${(props) => props.theme.colors.black.soft};
+    color: ${({ theme }) => theme.colors.black.soft};
     font-size: 14px;
   }
 `;
 
 const ErrorMessage = styled.p`
   margin-bottom: 12px;
-  color: ${(props) => props.theme.colors.red.customRed};
+  color: ${({ theme }) => theme.colors.red.customRed};
   font-size: 14px;
 `;
 
@@ -119,7 +119,7 @@ const SignUpForm = ({
           </ErrorMessage>
 
         <Terms>
-          <Checkbox variantColor="green" defaultIsChecked></Checkbox>
+          <Checkbox colorScheme="green" defaultIsChecked></Checkbox>
           <p>I have read the Terms of Use.</p>
         </Terms>
 

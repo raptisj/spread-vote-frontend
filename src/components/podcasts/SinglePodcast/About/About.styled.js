@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/react";
 
 const Container = styled(Box)`
   position: relative;

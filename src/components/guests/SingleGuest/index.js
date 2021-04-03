@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Box, Grid } from "@chakra-ui/core";
+import { Box, Grid } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { guestsSelector, upVoteGuest } from "../../../redux/slices/guests";
@@ -8,22 +8,28 @@ import { getSingleGuest } from "../../../redux/slices/guests";
 import GoBack from "../../../ui/GoBack";
 import GlobalSpinner from "../../../ui/GlobalSpinner";
 import Layout from "../../../screens/Layout";
-import CustomButton from "../../../ui/Button";
 import Styled from './SingleGuest.styled';
+import InformationCard from "./InformationCard";
+import VoteButton from "./VoteButton";
+import Header from '../../../ui/Header';
 
 const SingleGuest = () => {
   const dispatch = useDispatch();
-  const { singleGuest, loading } = useSelector(guestsSelector);
+  const { singleGuest, loading, podcastsInGuest } = useSelector(guestsSelector);
   const { isAuthenticated, user } = useSelector(authSelector);
   const { podId, id } = useParams();
 
-  useEffect(() => {
-    dispatch(getSingleGuest(podId, id));
-
+  
+  useEffect(() => { 
+    dispatch(getSingleGuest(id));
+    
     isAuthenticated && dispatch(currentUser());
-  }, [dispatch, id, podId, isAuthenticated]);
-
+  }, [dispatch, id, isAuthenticated]);
+  
   if (loading || singleGuest === null) return <GlobalSpinner />;
+  
+  // console.log(singleGuest.podcasts.find(podcast => podcast._id === podId).votes.length)
+  // console.log(singleGuest.podcasts.find(podcast => podcast._id === podId).votes.includes(user._id))
 
   const { name, twitter_name, twitter_image, votes, bio } = singleGuest;
 
@@ -31,6 +37,7 @@ const SingleGuest = () => {
     let userData = {
       votes: [user._id],
       podcastId: podId,
+      userId: user._id
     };
 
     dispatch(upVoteGuest(userData, singleGuest._id));
@@ -52,6 +59,7 @@ const SingleGuest = () => {
             }}
           />
         </Box>
+
         <Styled.InfoCard
           p="16px"
           display="flex"
@@ -59,47 +67,41 @@ const SingleGuest = () => {
           gridColumn="2 /4"
           mt="-272px"
         >
-          <Box display="flex" flexDirection="column" h="100%" pb="16px">
-            <Styled.Header>
-              <div>
-                <h2>{name}</h2>
-                <a
-                  href={`https://twitter.com/${twitter_name}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <h3>{twitter_name}</h3>
-                </a>
-              </div>
-              <div>
-                <Styled.Votes>
-                  <span>Votes:</span> {votes && votes.length}
-                </Styled.Votes>
-              </div>
-            </Styled.Header>
 
-            <Styled.Divider />
+        <InformationCard name={name} twitterName={twitter_name} votes={votes} bio={bio} />
 
-            {bio && <Styled.Bio>{bio}</Styled.Bio>}
-          </Box>
-          <Box mt="auto" textAlign="right">
-            {isAuthenticated && (
-              <CustomButton
-                appearance="primary"
-                disabled={user ? singleGuest.votes.includes(user._id) : null}
-                onClick={() => handleVote()}
-                isLoading={loading}
-              >
-                {user
-                  ? singleGuest.votes.includes(user._id)
-                    ? "Voted"
-                    : "Vote"
-                  : null}
-              </CustomButton>
-            )}
-          </Box>
+        <VoteButton 
+          isAuthenticated={isAuthenticated} 
+          singleGuest={singleGuest} 
+          user={user} 
+          handleVote={handleVote} 
+          loading={loading} 
+        />
+
         </Styled.InfoCard>
       </Grid>
+
+      <Box pt="6rem" pb="4rem">
+        <Header>
+          <h2>This guest in other podcasts</h2>
+          <p><span>{name}</span> has appeared in these podcast's.</p>
+        </Header>
+
+          <Grid templateColumns="1fr 1fr" gap="16px" pt="4rem">
+            {podcastsInGuest.map(podcast => 
+              <React.Fragment key={podcast._id}>
+                {podId !== podcast._id && (
+                  <Styled.SmallFullCard key={podcast._id}>
+                    <h3>{podcast.name}</h3>
+                  </Styled.SmallFullCard>
+                  )}
+                  {(podcastsInGuest.length === 0 || (podcastsInGuest.length === 1 && podId === podcast._id)) && (
+                    <p>This guest hasn't appeared in any other podcasts.</p>
+                  )}
+                </React.Fragment>
+              )}
+          </Grid>
+      </Box>
     </Layout>
   );
 };

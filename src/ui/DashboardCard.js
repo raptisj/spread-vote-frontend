@@ -1,7 +1,7 @@
 import React from "react";
 import CustomButton from "../ui/Button";
 import styled from "@emotion/styled";
-import { Box, Image, useDisclosure } from "@chakra-ui/core";
+import { Box, Image, useDisclosure } from "@chakra-ui/react";
 import DeleteModal from "../screens/DeleteModal";
 import { Link, useParams } from "react-router-dom";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { ThemeProvider, CSSReset} from "@chakra-ui/core";
+import { ChakraProvider } from "@chakra-ui/react"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Navigation from "./components/globals/Navigation";
 import Footer from "./components/globals/Footer";
@@ -13,6 +13,7 @@ import SignUp from "./components/auth/SignUp";
 import AddGuest from "./components/guests/AddGuest";
 import Guests from "./components/guests/Guests";
 import Podcasts from "./components/podcasts/Podcasts";
+import Settings from 'components/settings/Settings'
 import RedirectRoute from "./utils/RedirectRoute";
 import PrivateRoute from "./utils/PrivateRoute";
 import styled from "@emotion/styled";
@@ -26,7 +27,7 @@ const BackgroundShape = styled.div`
   &::before {
     content: "";
     position: absolute;
-    background: #19c39c07;
+    background: #19c39c09;
     top: 0;
     width: 100%;
     height: 400px;
@@ -59,24 +60,24 @@ const BackgroundShape = styled.div`
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CSSReset />
+    <ChakraProvider resetCSS theme={theme}>
       <BackgroundShape />
       <Router>
         <Navigation />
 
         <Switch>
           <Route exact path="/" component={Podcasts} />
-          <Route exact path="/podcasts/:podId" component={Landing} />
-          <Route exact path="/podcasts/:podId/guests/" component={Guests} />
+          <Route exact path="/guests/" component={Guests} />
+          <Route exact path="/settings/" component={Settings} />
+          <Route exact path="/podcasts/:podId/" component={Landing} />
           <Route
             exact
-            path="/podcasts/:podId/guests/:id"
+            path="/guests/:id"
             component={SingleGuest}
           />
           <PrivateRoute
             exact
-            path="/podcasts/:podId/dash/"
+            path="/dashboard/"
             component={Dashboard}
           />
           <PrivateRoute
@@ -90,7 +91,7 @@ function App() {
 
         <Footer />
       </Router>
-    </ThemeProvider>
+    </ChakraProvider>
   );
 }
 

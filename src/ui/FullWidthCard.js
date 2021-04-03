@@ -1,17 +1,18 @@
 import React from "react";
-import { Box, Image } from "@chakra-ui/core";
+import { Box, Image } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 
 const Card = styled(Box)`
   border: none;
-  height: 120px;
+  height: 90px;
+  width: 80%;
+  margin: 0 auto;
   background: #fff;
   border-radius: 4px;
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.15);
   position: relative;
   transition: all 0.3s;
-  border: ${(props) =>
-    props.hasVoted ? `1px solid ${props.theme.colors.green.brand}` : null};
+  border: ${(props) => props.hasVoted ? `1px solid ${props.theme.colors.green.brand}` : null};
   display: flex;
   align-items: center;
   padding: 0 32px;
@@ -85,8 +86,9 @@ const FullWidthCard = ({ hasVoted = false, card }) => {
       <span>Voted</span>
       <Image
         rounded="9999px"
-        size="90px"
-        src={twitter_image}
+        w="90px"
+        h="90px"
+        src="https://img.favpng.com/22/13/24/disk-green-circle-png-favpng-3F6U9MeHGHMTjpQQa3uhewVhx.jpg"
         alt={name}
         display="block"
         p="8px"

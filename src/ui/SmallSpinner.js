@@ -1,5 +1,5 @@
 import React from "react";
-import { Spinner } from "@chakra-ui/core";
+import { Spinner } from "@chakra-ui/react";
 
 const SmallSpinner = ({ color = "#19c39c" }) => {
   return (
@@ -8,7 +8,8 @@ const SmallSpinner = ({ color = "#19c39c" }) => {
       speed="0.95s"
       emptyColor="#19c39c07"
       color="#19c39c"
-      size="2rem"
+      w="2rem"
+      h="2rem"
     />
   );
 };

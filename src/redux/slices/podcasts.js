@@ -31,8 +31,8 @@ export const getSinglePodcast = createAsyncThunk("podcast/fetchOne", async (id, 
   const response = await podcastAPI.fetchOne(id);
   const { _id } = response.data.podcast
 
-  dispatch(getAllGuests(_id))
-  dispatch(emptySingleGuest())
+  // dispatch(getAllGuests(_id))
+  // dispatch(emptySingleGuest())
 
   return response.data;
 });

@@ -37,7 +37,8 @@ const authSlice = createSlice({
       state.isAuthenticated = JSON.stringify(
         window.localStorage.setItem("auth", true)
         );
-      state.userId = window.localStorage.setItem("userId", payload.id);    },
+      state.userId = window.localStorage.setItem("userId", payload.id);  
+    },
 
     logoutSuccess: (state) => {
       state.loading = false;
@@ -50,6 +51,10 @@ const authSlice = createSlice({
       state.loading = false;
       state.isAuthenticated = true;
       state.user = payload;
+    },
+
+    updateUser: (state, { payload }) => {
+      state.user = payload
     },
 
     updateGuestsSuccess: (state, { payload }) => {
@@ -83,6 +88,7 @@ export const {
   loginSuccess,
   logoutSuccess,
   currentSuccess,
+  updateUser,
   updateGuestsSuccess,
   removeGuestsSuccess,
   reportFailure,
@@ -104,6 +110,7 @@ export const signUp = (userData, customPath) => async (dispatch) => {
   try {
     const res = await axios.post(apiUrl, userData);
 
+    console.log(res.data)
     dispatch(signUpSuccess(res.data));
 
     window.location.replace(customPath);
@@ -152,7 +159,7 @@ export const login = (userData, customPath) => async (dispatch) => {
 export const logout = () => (dispatch) => {
   window.localStorage.removeItem("token");
   window.location.replace("/auth/login/");
-
+console.log('hell')
   dispatch(logoutSuccess());
 };
 
@@ -186,49 +193,49 @@ export const currentUser = () => async (dispatch, getState) => {
  *
  * UPDATE GUESTS
  */
-export const updateGuests = (votesData) => async (dispatch, getState) => {
-  let apiUrl = `${url}/user/guest/add/`;
+// export const updateGuests = (votesData) => async (dispatch, getState) => {
+//   let apiUrl = `${url}/user/guest/add/`;
 
-  try {
-    const res = await axios.patch(apiUrl, votesData, tokenConfig(getState));
-    console.log(res.data);
-    dispatch(updateGuestsSuccess(res.data));
-  } catch (error) {
-    if (error) {
-      if (error.response.status === 400) {
-        dispatch(reportFailure());
-      } else {
-        dispatch(reportFailure());
-      }
-    }
-  }
-};
+//   try {
+//     const res = await axios.patch(apiUrl, votesData, tokenConfig(getState));
+//     console.log(res.data);
+//     dispatch(updateGuestsSuccess(res.data));
+//   } catch (error) {
+//     if (error) {
+//       if (error.response.status === 400) {
+//         dispatch(reportFailure());
+//       } else {
+//         dispatch(reportFailure());
+//       }
+//     }
+//   }
+// };
 
 /**
  *
  *  REMOVE GUEST FROM USER
  */
-export const removeGuestsFromUser = (votesData) => async (
-  dispatch,
-  getState
-) => {
-  let apiUrl = `${url}/user/guest/remove/`;
+// export const removeGuestsFromUser = (votesData) => async (
+//   dispatch,
+//   getState
+// ) => {
+//   let apiUrl = `${url}/user/guest/remove/`;
 
-  try {
-    const res = await axios.patch(apiUrl, votesData, tokenConfig(getState));
+//   try {
+//     const res = await axios.patch(apiUrl, votesData, tokenConfig(getState));
 
-    dispatch(removeGuestsSuccess(res.data._id));
-  } catch (error) {
-    if (error) {
-      // console.log(error);
-      if (error.response.status === 400) {
-        dispatch(reportFailure());
-      } else {
-        dispatch(reportFailure());
-      }
-    }
-  }
-};
+//     dispatch(removeGuestsSuccess(res.data._id));
+//   } catch (error) {
+//     if (error) {
+//       // console.log(error);
+//       if (error.response.status === 400) {
+//         dispatch(reportFailure());
+//       } else {
+//         dispatch(reportFailure());
+//       }
+//     }
+//   }
+// };
 
 /**
  *

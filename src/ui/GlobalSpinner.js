@@ -1,5 +1,5 @@
 import React from "react";
-import { Spinner, Box } from "@chakra-ui/core";
+import { Spinner, Box } from "@chakra-ui/react";
 
 const GlobalSpinner = () => {
   return (
@@ -15,7 +15,8 @@ const GlobalSpinner = () => {
         speed="0.95s"
         emptyColor="#19c39c07"
         color="#19c39c"
-        size="4rem"
+        w="4rem"
+        h="4rem"
       />
     </Box>
   );

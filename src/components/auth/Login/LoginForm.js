@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Input, FormControl, FormLabel } from "@chakra-ui/core";
+import { Box, Input, FormControl, FormLabel } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 import CustomButton from "../../../ui/Button";

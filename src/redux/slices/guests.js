@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
 import axios from "axios";
-import { tokenConfig, logout } from "./auth";
+import { tokenConfig, updateUser, logout } from "./auth";
 import { URL } from '../../constants';
 
 let url = "http://localhost:4000";
@@ -11,32 +11,43 @@ export const guestAdapter = createEntityAdapter({
 
 const initialState = guestAdapter.getInitialState({ 
   loading: false,
-  scrapeLoader: false,
   hasErrors: false,
   singleGuest: null,
-  twitterData: null,
+  podcastsInGuest: null,
 });
 
 export const guestAPI = {
-  async fetchAll(podId) {
-    const res = await axios.get(`${URL}/podcasts/${podId}/guests`);
+  async fetchAll() {
+    const res = await axios.get(`${URL}/guests`);
     return res
   },
-  async fetchUserGuests(userId, getState) {
-    const res = await axios.get(`${URL}/user/${userId}`, tokenConfig(getState));
+  async updateGuest(userData, getState) {
+    const res = await axios.patch(`${URL}/guests/${userData._id}`, userData, tokenConfig(getState));
     return res
   },
+  // async fetchUserGuest(guestId, getState) {
+  //   const res = await axios.get(`${URL}/user/${guestId}`, tokenConfig(getState));
+  //   return res
+  // },
 };
 
-export const getAllGuests = createAsyncThunk("guest/fetchAll", async (podId) => {
-  const response = await guestAPI.fetchAll(podId);
+export const getAllGuests = createAsyncThunk("guest/fetchAll", async () => {
+  const response = await guestAPI.fetchAll();
   return response.data;
 });
 
-export const currentUserGuests = createAsyncThunk("guest/fetchUserGuests", async (userId, { getState }) => {
-  const response = await guestAPI.fetchUserGuests(userId, getState);
+export const updateUserGuest = createAsyncThunk("guest/updateGuest", async (userData, { dispatch, getState }) => {
+  const response = await guestAPI.updateGuest(userData, getState);
+
+  dispatch(updateUser(response.data.user))
+
   return response.data;
 });
+
+// export const getSingleGuest = createAsyncThunk("guest/fetchUserGuests", async (guestId, { getState }) => {
+//   const response = await guestAPI.fetchUserGuest(guestId, getState);
+//   return response.data;
+// });
 
 const guestsSlice = createSlice({
   name: "guests",
@@ -60,7 +71,9 @@ const guestsSlice = createSlice({
 
     getSingleGuestSuccess: (state, { payload }) => {
       state.loading = false;
-      state.singleGuest = payload;
+      guestAdapter.setAll(state, payload);
+      state.singleGuest = payload.singleGuest;
+      state.podcastsInGuest = payload.guestInPodcasts;
     },
 
     voteGuestSuccess: (state, { payload }) => {
@@ -94,18 +107,27 @@ const guestsSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(getAllGuests.fulfilled, (state, action) => {
-      guestAdapter.setAll(state, action.payload);
+      guestAdapter.upsertMany(state, action.payload);
       state.loading = false;
       state.routeRedirect = null
     });
-    builder.addCase(currentUserGuests.pending, (state) => {
+    builder.addCase(updateUserGuest.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(currentUserGuests.fulfilled, (state, action) => {
-      guestAdapter.setAll(state, action.payload);
+    builder.addCase(updateUserGuest.fulfilled, (state, action) => {
+      guestAdapter.upsertOne(state, action.payload.guest);
       state.loading = false;
+
       state.routeRedirect = null
     });
+    // builder.addCase(currentUserGuests.pending, (state) => {
+    //   state.loading = true;
+    // });
+    // builder.addCase(currentUserGuests.fulfilled, (state, action) => {
+    //   guestAdapter.setAll(state, action.payload);
+    //   state.loading = false;
+    //   state.routeRedirect = null
+    // });
   }
 });
 
@@ -122,6 +144,7 @@ export const {
 } = guestsSlice.actions;
 
 export const guestsSelector = (state) => state.guests;
+// export const publishedGuestsSelector = (state) => state.guests.Object..filter(p => p.state !== 'hidden');
 export default guestsSlice.reducer;
 
 export const {
@@ -160,10 +183,10 @@ export const {
  *
  *  GET SINGLE GUESTS
  */
-export const getSingleGuest = (podId, id) => async (dispatch) => {
+export const getSingleGuest = (id) => async (dispatch) => {
   dispatch(loadGuests());
 
-  let apiUrl = `${URL}/podcasts/${podId}/guests/${id}`;
+  let apiUrl = `${URL}/guests/${id}`;
 
   try {
     const res = await axios.get(apiUrl);
@@ -215,7 +238,7 @@ export const upVoteGuest = (userId, id) => async (dispatch, getState) => {
  *
  *  UN VOTE GUESTS
  */
-export const unVoteGuest = (userId, id, podId) => async (
+export const unVoteGuest = (userData, id, podId) => async (
   dispatch,
   getState
 ) => {
@@ -224,7 +247,7 @@ export const unVoteGuest = (userId, id, podId) => async (
   let apiUrl = `${URL}/guests/un-vote/${id}`;
 
   try {
-    await axios.patch(apiUrl, userId, tokenConfig(getState));
+    await axios.patch(apiUrl, userData, tokenConfig(getState));
 
     window.location.replace(`/podcasts/${podId}/dash`);
   } catch (error) {

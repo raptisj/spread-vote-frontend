@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, Image } from "@chakra-ui/core";
+import { Box, Image,  Heading, Text } from "@chakra-ui/react";
 
 const Card = styled(Box)`
   border: none;
@@ -9,16 +9,11 @@ const Card = styled(Box)`
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.15);
   position: relative;
   transition: all 0.3s;
-  border: ${(props) =>
-    props.hasVoted ? `1px solid ${props.theme.colors.green.brand}` : null};
+  border: ${(props) => props.hasVoted ? `1px solid ${props.theme.colors.green.brand}` : null};
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 8px 32px 24px 32px;
-
-  h3 {
-    color: ${(props) => props.theme.colors.black.dark};
-  }
+  padding: 1rem;
 
   img {
     transform: scale(1);
@@ -52,8 +47,6 @@ const Card = styled(Box)`
   ${(props) => props.hasVoted && `& > span {display: block;}`}
 
   h3 {
-    font-size: 24px;
-    margin-top: 16px;
     color: ${(props) => props.theme.colors.black.dark};
     font-weight: 100;
     display: -webkit-box;
@@ -80,13 +73,15 @@ const Card = styled(Box)`
     align-items: baseline;
   }
 `;
+
 const PodcastCard = ({ podcast }) => {
   const { name, guests } = podcast;
 
   return (
     <Card>
       <Image
-        size="130px"
+        w="130px"
+        h="130px"
         src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
         alt={name}
         display="block"
@@ -101,10 +96,10 @@ const PodcastCard = ({ podcast }) => {
         w="100%"
       >
         <div>
-          <h3>{name}</h3>
-          <p>
+          <Heading as="h3" fontSize="20px" mt={2}>{name}</ Heading>
+          <Text>
             Guests: <span>{guests.length}</span>
-          </p>
+          </Text>
         </div>
       </Box>
     </Card>

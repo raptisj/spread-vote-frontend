@@ -7,7 +7,7 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import CustomButton from "../ui/Button";
 
 const CloseModal = styled.span`

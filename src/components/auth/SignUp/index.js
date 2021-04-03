@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Grid } from "@chakra-ui/core";
+import { Box, Grid } from "@chakra-ui/react";
 import SignUpForm from "./SignUpForm";
 import { useDispatch, useSelector } from "react-redux";
 import { signUp, authSelector } from "../../../redux/slices/auth";
@@ -23,7 +23,7 @@ const SignUp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const userData = { firstName, lastName, email, password };
+    const userData = { name: `${firstName} ${lastName}`, email, password };
 
     dispatch(signUp(userData, customPath));
   };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/react";
 import LinkButton from "../ui/LinkButton";
 import styled from "@emotion/styled";
 import { useParams } from "react-router-dom";

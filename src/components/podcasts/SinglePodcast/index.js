@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Grid } from "@chakra-ui/core";
+import { Grid } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { authSelector, currentUser } from "../../../redux/slices/auth";
@@ -35,6 +35,7 @@ const Landing = () => {
   if (loading || podcastLoading || guestLoading || isEmpty(singlePodcast))
   return <GlobalSpinner />;
   
+  console.log(singlePodcast)
   return (
     <Layout>
       <GoBack />

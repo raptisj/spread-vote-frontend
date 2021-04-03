@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid } from "@chakra-ui/core";
+import { Box, Grid } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { authSelector, login, resetErrors } from "../../../redux/slices/auth";

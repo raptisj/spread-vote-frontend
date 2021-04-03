@@ -1,17 +1,14 @@
 import React, { useEffect } from "react";
-import { Grid } from "@chakra-ui/core";
+import { Grid } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-// redux
-import { authSelector, currentUser } from "../../../redux/slices/auth";
-import { getAllPodcasts, selectAllPodcasts } from "../../../redux/slices/podcasts";
-// ui
-import GlobalSpinner from "../../../ui/GlobalSpinner";
-import PodcastCard from "../../../ui/PodcastCard";
-import Layout from "../../../screens/Layout";
-import Header from '../../../ui/Header';
-// constants
-import { headersContent } from '../../../constants/contents';
+import { authSelector, currentUser } from "redux/slices/auth";
+import { getAllPodcasts, selectAllPodcasts } from "redux/slices/podcasts";
+import GlobalSpinner from "ui/GlobalSpinner";
+import PodcastCard from "ui/PodcastCard";
+import Layout from "screens/Layout";
+import Header from 'ui/Header';
+import { headersContent } from 'constants/contents';
 
 const Podcasts = () => {
   const dispatch = useDispatch();
@@ -28,14 +25,15 @@ const Podcasts = () => {
   if (isAuthenticated) {
     if (loading || podcastsLoading || user === null) return <GlobalSpinner />;
   }
-  if (loading || podcastsLoading || podcasts.length === 0) return <GlobalSpinner />;
+  if (loading || podcastsLoading) return <GlobalSpinner />;
+  // if (podcasts.length === 0) return 'no podcasts yet!!';
   
 
   return (
     <Layout>
       <Header 
         heading={headersContent.PODCAST_HEADER} 
-        subHeading={headersContent.PODCAST_SUBHEADER} 
+        // subHeading={headersContent.PODCAST_SUBHEADER} 
       />
 
       <Grid

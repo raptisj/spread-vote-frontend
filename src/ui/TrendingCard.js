@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Image } from "@chakra-ui/core";
+import { Box, Image } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import {
   fetchUpdateTwitterData,
@@ -18,8 +18,7 @@ const Card = styled(Box)`
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.15);
   position: relative;
   transition: all 0.3s;
-  border: ${(props) =>
-    props.hasVoted ? `1px solid ${props.theme.colors.green.brand}` : null};
+  border: ${(props) =>  props.hasVoted ? `1px solid ${props.theme.colors.green.brand}` : null};
 
   img {
     transform: scale(1);
@@ -49,6 +48,11 @@ const Card = styled(Box)`
     border-radius: 4px;
     font-weight: 600;
   }
+  
+  h3 {
+    font-size: 1.2rem;
+  }
+
 
   ${(props) => props.hasVoted && `& > span {display: block;}`}
 
@@ -111,7 +115,8 @@ const TrendingCard = ({ hasVoted = false, card }) => {
       <ImageBox>
         <Image
           rounded="9999px"
-          size="150px"
+          w="150px"
+          h="150px"
           src={img}
           onError={() => findBrokenImage(twitter_name)}
           alt={name}

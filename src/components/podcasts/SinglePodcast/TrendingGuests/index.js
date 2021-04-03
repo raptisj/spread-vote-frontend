@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid } from "@chakra-ui/core";
+import { Box, Grid } from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";

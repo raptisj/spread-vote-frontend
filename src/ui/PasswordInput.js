@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/core";
+import { Input, InputGroup, InputRightElement } from "@chakra-ui/react";
 import EyeClosed from "../icons/EyeClosed";
 import EyeOpen from "../icons/EyeOpen";
 import styled from "@emotion/styled";

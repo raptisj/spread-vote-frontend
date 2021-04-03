@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/react";
 
 const Footer = () => {
   return (
@@ -9,7 +9,7 @@ const Footer = () => {
       margin="0 auto"
       maxWidth="1280px"
     >
-      <p style={{ color: "#717277", fontSize: "14px" }}>TellJoe @2020</p>
+      <p style={{ color: "#717277", fontSize: "14px" }}>SpreadVote @2021</p>
     </Box>
   );
 };
